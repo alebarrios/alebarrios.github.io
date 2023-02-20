@@ -15,7 +15,7 @@ export default class Grupo {
     }
 
     getSaldo(_integrante){
-        return this.#saldos.get(_integrante);
+        return parseFloat(this.#saldos.get(_integrante));
     }
 
     agregarIntegrante(_integrante){
@@ -38,6 +38,12 @@ export default class Grupo {
             console.log("Integrante no existe.");
             return;
         };
+
+        if(_gasto.getImporte() <= 0){ 
+            console.log("El importe no puede ser negativo");
+            return; 
+        };
+
         _integrante.agregarGasto(_gasto);
         this.#saldos.set(_integrante, this.#saldos.get(_integrante) + _gasto.getImporte());
         
@@ -84,11 +90,15 @@ export default class Grupo {
         });
     }
 
-    printSaldos(){
+    mostrarSaldos(){
         console.log(`Estos son los saldos del grupo: ${this.#nombre}`);
+        let mensaje = "";
         this.#integrantes.forEach((integrante) => {
-            console.log(`El saldo de ${integrante.getPersona().getNombre()} es de ${integrante.getSaldo()} pesos.`);
-        });
+            mensaje += `El saldo de ${integrante.getPersona().getNombre()} es de ${integrante.getSaldo().toFixed(2)} pesos.`;
+            mensaje += '\n';
+            console.log(mensaje);
             
+        });
+        alert(mensaje);
     }
 };

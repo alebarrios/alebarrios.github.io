@@ -33,7 +33,7 @@ export default class IntegranteGrupo {
         this.#gastos.forEach( (gasto) => {
             importeTotal += gasto.getImporte();
         });
-        console.log(`Gasto Total de ${this.#persona.getNombre()} es ${importeTotal}`);
+        //console.log(`Gasto Total de ${this.#persona.getNombre()} es ${importeTotal}`);
         return importeTotal;
     }
 

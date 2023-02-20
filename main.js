@@ -26,7 +26,8 @@ function simulador() {
     const arrayIntegrantes = [];
     
     for (let i = 0; i < arrayNombresIntegrantes.length; i++) {
-        const nombreIntegrante = arrayNombresIntegrantes[i];
+        let nombreIntegrante = arrayNombresIntegrantes[i];
+        if(nombreIntegrante == "") {nombreIntegrante = "NombreDefault" + i};
         const persona = new Persona(nombreIntegrante);
         const integrante = new IntegranteGrupo(persona, miGrupo);
         arrayIntegrantes.push(integrante);
@@ -46,14 +47,14 @@ function simulador() {
 
         arrayGastos = stringGastos.split(',');
         for (let j = 0; j < arrayGastos.length; j++) {
-            const importe = isNaN(parseFloat(arrayGastos[j])) ? 0 : parseFloat(arrayGastos[j]);
+            let importe = isNaN(parseFloat(arrayGastos[j])) ? 0 : parseFloat(arrayGastos[j]);
+            importe = (importe < 0 ) ? importe * -1 : importe;
             miGrupo.registrarNuevoGasto(new Gasto(importe, TipoGasto.VARIOS),element);
         }
         
     }
 
     miGrupo.mostrarSaldos();
-
 }
 
 simulador();

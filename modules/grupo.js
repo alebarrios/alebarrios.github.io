@@ -19,7 +19,7 @@ export default class Grupo {
      * @param {IntegranteGrupo} _integrante - el nuevo integrante a agregar.
      */
     agregarIntegrante(_integrante){
-        console.log(`Agregando integrante ${_integrante.getPersona().getNombre()}`);
+        //console.log(`Agregando integrante ${_integrante.getPersona().getNombre()}`);
 
         if(this.#saldos.has(_integrante)) {
             console.log("Integrante ya existe en el grupo");
@@ -38,7 +38,7 @@ export default class Grupo {
      * @param {IntegranteGrupo} _integrante - el integrante que registra el gasto.
      */
     registrarNuevoGasto(_gasto,_integrante){
-        console.log("registrando gasto");
+        //console.log("registrando gasto");
         if(!this.#saldos.has(_integrante)){
             console.log("Integrante no existe.");
             return;
@@ -59,23 +59,23 @@ export default class Grupo {
      * Recalcula los saldos de todos los integrantes.
      */
     #recalcularSaldos(){
-        console.log("Recalculando saldos...");
+        //console.log("Recalculando saldos...");
         this.#saldos.clear();
 
         let gastosTotales = 0;
         this.#integrantes.forEach((integrante) =>{
             gastosTotales += integrante.getGastoTotal();
-            console.log(`Asignando a: ${integrante.getPersona().getNombre()} ${integrante.getGastoTotal()}`);
+            //console.log(`Asignando a: ${integrante.getPersona().getNombre()} ${integrante.getGastoTotal()}`);
             this.#saldos.set(integrante,integrante.getGastoTotal());
         });
-        console.log(`Gastos totales: ${gastosTotales}`);
+        //console.log(`Gastos totales: ${gastosTotales}`);
 
         const saldoARepartir = parseFloat(gastosTotales / this.#integrantes.length);
-        console.log(`Saldo a repartir: ${saldoARepartir}`);
+        //console.log(`Saldo a repartir: ${saldoARepartir}`);
 
         this.#integrantes.forEach((integrante) =>{
             let saldo = this.#saldos.get(integrante) - saldoARepartir;
-            console.log(`Saldo a asignar: ${saldo}`);
+            //console.log(`Saldo a asignar: ${saldo}`);
             this.#saldos.set(integrante,saldo);
         });
 
@@ -93,7 +93,59 @@ export default class Grupo {
             console.log(mensaje);
             
         });
+
+        mensaje += '\n' + this.#calcularDeudasPendientes();
         alert(mensaje);
+    }
+
+    /**
+     * Devuelve un string con las deudas de todos los integrantes del grupo.
+     */
+    #calcularDeudasPendientes(){
+        //Creo un Array con los saldos de los integrantes ordenados ascendentemente.
+        let integrantes = new Array([...this.#saldos.entries()].sort((a, b) => a[1] - b[1]));
+        integrantes = integrantes[0];
+
+        //mientras existan integrantes que tengan saldo negativo...
+        let deudor = integrantes.shift(); //Remuevo y tomo el primer Integrante del array. [Integrante,saldo]
+        let mensaje = "";
+
+        while(deudor[1] < 0){ //mientra haya deudores...
+            const nombreDeudor = deudor[0].getPersona().getNombre();
+            //console.log(`Deudor ${nombreDeudor} tiene inicialmente una deuda de ${deudor[1]}`);
+            //itero sobre los integrantes que tienen mas saldo a favor hacia el menor
+            for (let j = integrantes.length - 1; j >= 0; j--) {
+                const integrante = integrantes[j];
+                const nombreIntegrante = integrante[0].getPersona().getNombre();
+                //console.log(`Tomo integrante ${nombreIntegrante} que tiene un saldo de ${integrante[1]}`);
+                if(integrantes[j][1] > 0){ //si el otro integrante tiene saldo a favor...
+                    const saldoAFavor = integrante[1];
+                    const deuda = (deudor[1] * -1);
+                    if(deuda - saldoAFavor > 0 ) {
+                        //El deudor sigue moroso, se salda la deuda con el otro integrante.
+                        deudor[1] += saldoAFavor;
+                        integrantes[j][1] = 0;
+                        let newMensaje = `${nombreDeudor} le debe a ${nombreIntegrante} : ${saldoAFavor.toFixed(2)} pesos`;
+                        console.log(newMensaje);
+                        mensaje += newMensaje + '\n';
+                    } else{
+                        //El deudor deja de estar moroso, pero el otro integrante aun tiene saldo a favor (o cero).
+                            deudor[1] = 0;
+                            integrantes[j][1] = saldoAFavor - deuda;
+                            let newMensaje = `${nombreDeudor} le debe a ${nombreIntegrante} : ${deuda.toFixed(2)} pesos`;
+                            console.log(newMensaje);
+                            mensaje += newMensaje + '\n';
+                            break;
+                    }
+                };
+            };
+            //console.log(`La Deuda de ${nombreDeudor} quedó en ${deudor[1]}`);
+            //if(deudor[1] <= 0) { // si el deudor ya saldó su deuda..
+                deudor = integrantes.shift(); //Remuevo y tomo el nuevo deudor.
+            //};
+            
+        };
+        return mensaje;
     }
 
     /**

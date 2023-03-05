@@ -26,10 +26,23 @@ export default class HTMLhelper{
         this.#document.body.append(footerElement);
     }
 
-    crearContenedor({texto,tipo}){
-        const elemento = document.createElement(tipo);
-        elemento.innerHTML = texto;
+    agregarGrupoAlDOM(nombreGrupo){
+        const mainElement = this.#document.querySelector("main");
+        const headerElem = this.#document.createElement("header");
+        const listaElem = this.#document.createElement("ul");
+        headerElem.innerHTML = `<h2>Gastos del Grupo: ${nombreGrupo}</h2>`;
+        headerElem.append(listaElem);
+
+        mainElement.append(headerElem);
     }
+
+   /*  agregarGastoAlDOM({fecha, tipoGasto, importe, nombreIntegrante}){
+        const listaElement = this.#document.querySelector("ul");
+        const itemListaElem = this.#document.createElement("li");
+
+
+        
+    } */
 
 
 }

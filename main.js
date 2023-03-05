@@ -17,6 +17,7 @@ function simulador() {
     }
 
     const miGrupo = new Grupo(nombreGrupo);
+    myHTMLhelper.agregarGrupoAlDOM(nombreGrupo);
 
     let nombresIntegrantes = prompt(`Por favor, ingrese la lista de participantes del grupo ${nombreGrupo} separados por ','. Ejemplo: Pedro,Juan,Nahuel`);
     if(nombresIntegrantes === null) return;

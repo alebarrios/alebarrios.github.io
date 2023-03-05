@@ -148,6 +148,16 @@ export default class Grupo {
         return mensaje;
     }
 
+    ordenarIntegrantesPorSaldo(){
+        this.#integrantes.sort(this.#ordenGastoTotal);
+    }
+
+    #ordenGastoTotal(integranteA,integranteB){
+        if(integranteA.getGastoTotal() > integranteB.getGastoTotal()) { return -1;} 
+        if(integranteA.getGastoTotal() < integranteB.getGastoTotal()) { return -1;} 
+        return 0;
+    }
+
     /**
      * Obtiene el nombre del grupo.
      * @return {string} el nombre.

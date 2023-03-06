@@ -54,6 +54,13 @@ function simulador() {
             let importe = isNaN(parseFloat(arrayGastos[j])) ? 0 : parseFloat(arrayGastos[j]);
             importe = (importe < 0 ) ? importe * -1 : importe;
             miGrupo.registrarNuevoGasto(new Gasto(importe, TipoGasto.VARIOS),element);
+            const gasto = {
+                fecha: '05-03',
+                tipoGasto: "Varios",
+                importe,
+                nombreIntegrante: element.getPersona().getNombre()
+            };
+            myHTMLhelper.agregarGastoAlDOM(gasto);
         }
         
     }

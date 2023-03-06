@@ -16,33 +16,47 @@ export default class HTMLhelper{
         headerElement.innerHTML = `<h1>Segunda Pre-Entrega del proyecto final</h1>`;
 
         const mainElement = this.#document.createElement("main");
-        mainElement.innerHTML = `Este es el main`;
 
         const footerElement = this.#document.createElement("footer");
-        footerElement.innerHTML = `Este es el footer`; 
+        footerElement.innerHTML = `Alejandro Barrios - Coderhouse`;
+        
+        const seccion1Element = this.#document.createElement("section");
+        seccion1Element.className = "seccionGastos";
 
-        this.#document.body.append(headerElement);
-        this.#document.body.append(mainElement);
-        this.#document.body.append(footerElement);
+        const seccion2Element = this.#document.createElement("section");
+        seccion2Element.className = "seccionSaldos";
+
+        const seccion3Element = this.#document.createElement("section");
+        seccion3Element.className = "seccionDeudas";
+
+        mainElement.append(seccion1Element, seccion2Element, seccion3Element);
+
+        this.#document.body.append(headerElement, mainElement, footerElement);
+        
     }
 
     agregarGrupoAlDOM(nombreGrupo){
-        const mainElement = this.#document.querySelector("main");
+        const seccion1Element = this.#document.querySelector(".seccionGastos");
+        
         const headerElem = this.#document.createElement("header");
         const listaElem = this.#document.createElement("ul");
         headerElem.innerHTML = `<h2>Gastos del Grupo: ${nombreGrupo}</h2>`;
-        headerElem.append(listaElem);
 
-        mainElement.append(headerElem);
+        seccion1Element.append(headerElem, listaElem);
     }
 
-   /*  agregarGastoAlDOM({fecha, tipoGasto, importe, nombreIntegrante}){
-        const listaElement = this.#document.querySelector("ul");
-        const itemListaElem = this.#document.createElement("li");
-
-
+     agregarGastoAlDOM({fecha, tipoGasto, importe, nombreIntegrante}){
         
-    } */
+        const element = this.#document.createElement("li");
+        element.innerHTML = `${fecha} | ${tipoGasto} | ${importe} | ${nombreIntegrante}`;
+
+        const listaElement = this.#document.querySelector(".seccionGastos ul");
+        listaElement.append(element);     
+    }
+
+    agregarSaldoAlDOM(){
+        
+    }
 
 
 }

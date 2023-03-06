@@ -37,12 +37,24 @@ export default class HTMLhelper{
 
     agregarGrupoAlDOM(nombreGrupo){
         const seccion1Element = this.#document.querySelector(".seccionGastos");
+        const seccion2Element = this.#document.querySelector(".seccionSaldos");
+        const seccion3Element = this.#document.querySelector(".seccionDeudas");
         
-        const headerElem = this.#document.createElement("header");
-        const listaElem = this.#document.createElement("ul");
-        headerElem.innerHTML = `<h2>Gastos del Grupo: ${nombreGrupo}</h2>`;
+        const headerSeccion1Elem = this.#document.createElement("header");
+        const listaGastosElem = this.#document.createElement("ul");
+        headerSeccion1Elem.innerHTML = `<h2>Gastos del Grupo: ${nombreGrupo}</h2>`;
 
-        seccion1Element.append(headerElem, listaElem);
+        const headerSeccion2Elem = this.#document.createElement("header");
+        const listaSaldosElem = this.#document.createElement("ul");
+        headerSeccion2Elem.innerHTML = `<h2>Saldos de Integrantes del Grupo: ${nombreGrupo}</h2>`;
+
+        const headerSeccion3Elem = this.#document.createElement("header");
+        const listaDeudasElem = this.#document.createElement("ul");
+        headerSeccion3Elem.innerHTML = `<h2>Deudas de Integrantes del Grupo: ${nombreGrupo}</h2>`;
+
+        seccion1Element.append(headerSeccion1Elem, listaGastosElem);
+        seccion2Element.append(headerSeccion2Elem, listaSaldosElem);
+        seccion3Element.append(headerSeccion3Elem, listaDeudasElem);
     }
 
      agregarGastoAlDOM({fecha, tipoGasto, importe, nombreIntegrante}){
@@ -54,8 +66,20 @@ export default class HTMLhelper{
         listaElement.append(element);     
     }
 
-    agregarSaldoAlDOM(){
-        
+    agregarSaldoAlDOM(stringSaldo){
+        const element = this.#document.createElement("li");
+        element.innerHTML = stringSaldo;
+
+        const listaElement = this.#document.querySelector(".seccionSaldos ul");
+        listaElement.append(element);
+    }
+
+    agregarDeudaAlDOM(stringDeuda){
+        const element = this.#document.createElement("li");
+        element.innerHTML = stringDeuda;
+
+        const listaElement = this.#document.querySelector(".seccionDeudas ul");
+        listaElement.append(element);
     }
 
 

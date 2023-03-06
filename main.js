@@ -65,7 +65,16 @@ function simulador() {
         
     }
 
-    miGrupo.mostrarSaldos();
+    const mensajeSaldos = miGrupo.calcularSaldos();
+    mensajeSaldos.forEach((stringSaldo) => {
+        myHTMLhelper.agregarSaldoAlDOM(stringSaldo);
+    });
+
+    const mensajeDeudas = miGrupo.calcularDeudasPendientes();
+    mensajeDeudas.forEach((stringDeuda) => {
+        myHTMLhelper.agregarDeudaAlDOM(stringDeuda);
+    });
+
 }
 
 simulador();

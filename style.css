@@ -1,0 +1,31 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+
+  section header,
+  footer {
+    padding-inline: 1rem;
+  }
+  
+  .intro {
+    background: #23424a;
+    color: white;
+    padding: 1rem 0;
+  }
+  
+  .container {
+    width: 50%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .intro-content {
+    width: 50%;
+  }

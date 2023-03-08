@@ -55,7 +55,7 @@ function simulador() {
             importe = (importe < 0 ) ? importe * -1 : importe;
             miGrupo.registrarNuevoGasto(new Gasto(importe, TipoGasto.VARIOS),element);
             const gasto = {
-                fecha: '05-03',
+                fecha: new Date().toLocaleDateString('en-GB'),
                 tipoGasto: "Varios",
                 importe,
                 nombreIntegrante: element.getPersona().getNombre()

@@ -13,7 +13,12 @@ export default class HTMLhelper{
 
     #inicializarHTML(){
         const headerElement = this.#document.createElement("header");
-        headerElement.innerHTML = `<h1>Segunda Pre-Entrega del proyecto final</h1>`;
+        headerElement.classList.add("intro");
+        const containerElement = this.#document.createElement("div");
+        containerElement.classList.add("container");
+        headerElement.append(containerElement);
+        containerElement.innerHTML = `<h1>Segunda Pre-Entrega del proyecto final</h1>`;
+        
 
         const mainElement = this.#document.createElement("main");
 
@@ -60,7 +65,7 @@ export default class HTMLhelper{
      agregarGastoAlDOM({fecha, tipoGasto, importe, nombreIntegrante}){
         
         const element = this.#document.createElement("li");
-        element.innerHTML = `${fecha} | ${tipoGasto} | ${importe} | ${nombreIntegrante}`;
+        element.innerHTML = `${fecha} | ${tipoGasto} | $ ${importe.toFixed(2)} | ${nombreIntegrante}`;
 
         const listaElement = this.#document.querySelector(".seccionGastos ul");
         listaElement.append(element);     

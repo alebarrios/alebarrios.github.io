@@ -5,11 +5,11 @@ import Grupo from "./modules/grupo.js";
 import HTMLhelper from "./modules/HTMLhelper.js";
 
 /** Funcion que simula la carga de gastos e integrantes a un grupo de personas. */
-function simulador() {
+function aplicacion() {
 
     const myHTMLhelper = new HTMLhelper(document); 
     
-    let nombreGrupo = prompt("Bienvenido/a al divisor de gastos. Por favor, ingrese el nombre de su grupo:");
+ /*    let nombreGrupo = prompt("Bienvenido/a al divisor de gastos. Por favor, ingrese el nombre de su grupo:");
     if(nombreGrupo === null) { return };
     if(nombreGrupo == "") {
         alert("Nombre de grupo vacío. Se asigna Grupo 1 como default.");
@@ -73,11 +73,11 @@ function simulador() {
     const mensajeDeudas = miGrupo.calcularDeudasPendientes();
     mensajeDeudas.forEach((stringDeuda) => {
         myHTMLhelper.agregarDeudaAlDOM(stringDeuda);
-    });
-
+    }); */
+    
 }
 
-simulador();
+aplicacion();
 
 
 

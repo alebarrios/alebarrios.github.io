@@ -8,7 +8,7 @@ export default class HTMLhelper{
      */
     constructor(documento){
         this.#document = documento;
-        document.getElementById("wrapper").remove();
+        //document.getElementById("wrapper").remove();
         this.#inicializarHTML();
         this.#cargarSBAdminScript();
     }
@@ -54,7 +54,8 @@ export default class HTMLhelper{
             _clases: "sidebar-brand d-flex align-items-center justify-content-center",
             _href: "index.html",
             _padre: sideBarElement});
-        titulo.innerHTML = `<div class="sidebar-brand-text mx-3">Divisor-Gastos</div>`;
+        titulo.innerHTML = `<div class="sidebar-brand-icon"><i class="fas fa-donate"></i>
+            </div><div class="sidebar-brand-text mx-3">Divisor-Gastos</div>`;
         //Divider
         this.#AgregarElementoHTML({_tipo: "hr",_clases: "sidebar-divider my-0",_padre: sideBarElement});
         
@@ -189,11 +190,60 @@ export default class HTMLhelper{
                 <a class="dropdown-item text-center small text-gray-500" href="#">Ver todas las
                     alertas</a>`;
         //Mensajes
+        const navBarMensajes = this.#AgregarElementoHTML({
+            _tipo: "li",
+            _clases: "nav-item dropdown no-arrow mx-1",
+            _padre: navBar});
 
+        const aMensajes = this.#AgregarElementoHTML({
+            _tipo: "a",
+            _clases: "nav-link dropdown-toggle",
+            _id: "messagesDropdown",
+            _href: "#",
+            _padre: navBarMensajes});
+        aMensajes.innerHTML = `<i class="fas fa-envelope fa-fw"></i>
+        <span class="badge badge-danger"></span>`;
+        aMensajes.setAttribute('role','button');
+        aMensajes.setAttribute('data-toggle','dropdown');
+        aMensajes.setAttribute('aria-haspopup','true');
+        aMensajes.setAttribute('aria-expanded','false');
+
+        const dropdownMensajes = this.#AgregarElementoHTML({
+            _clases: "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in",
+            _padre: navBarMensajes});
+        dropdownMensajes.setAttribute('aria-labelledby','messagesDropdown');
+        dropdownMensajes.innerHTML = `<h6 class="dropdown-header">Mensajes</h6>
+            <a class="dropdown-item text-center small text-gray-500" href="#">No hay mensajes</a>`;
+
+        this.#AgregarElementoHTML({
+            _clases: "topbar-divider d-none d-sm-block",
+            _padre: navBar});
 
         //Info User
+        const navBarUser = this.#AgregarElementoHTML({
+            _tipo: "li",
+            _clases: "nav-item dropdown no-arrow",
+            _padre: navBar});
 
+        const aUser = this.#AgregarElementoHTML({
+            _tipo: "a",
+            _clases: "nav-link dropdown-toggle",
+            _id: "userDropdown",
+            _href: "#",
+            _padre: navBarUser});
+        aUser.innerHTML = ` <span class="mr-2 d-none d-lg-inline text-gray-600 small">Usuario Coder</span>
+        <img class="img-profile rounded-circle" src="img/undraw_profile.svg">`;
+        aUser.setAttribute('role','button');
+        aUser.setAttribute('data-toggle','dropdown');
+        aUser.setAttribute('aria-haspopup','true');
+        aUser.setAttribute('aria-expanded','false');
         
+        const dropdownUser = this.#AgregarElementoHTML({
+            _clases: "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in",
+            _padre: navBarUser});
+        dropdownUser.setAttribute('aria-labelledby','userDropdown');
+        dropdownUser.innerHTML = `<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>Salir</a>`;
 
         return navElement;
     }

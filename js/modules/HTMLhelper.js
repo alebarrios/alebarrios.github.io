@@ -10,6 +10,7 @@ export default class HTMLhelper{
         this.#document = documento;
         document.getElementById("wrapper").remove();
         this.#inicializarHTML();
+        this.#cargarSBAdminScript();
     }
 
     #inicializarHTML() {
@@ -32,10 +33,8 @@ export default class HTMLhelper{
             _id: "content",
             _padre: contentWrapperElement}); 
         //Nav
-        this.#AgregarElementoHTML({
-            _tipo: "nav",
-            _clases: "navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow",
-            _padre: contentElement}); 
+        this.#crearNav(contentElement);
+        
         //Container Fluid - Page content
         const containerFluidElement = this.#AgregarElementoHTML({
             _clases: "container-fluid",
@@ -132,6 +131,73 @@ export default class HTMLhelper{
         return sideBarElement;
     }
 
+    #crearNav(nodoPadre){
+        const navElement = this.#AgregarElementoHTML({
+            _tipo: "nav",
+            _clases: "navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow",
+            _padre: nodoPadre});
+        
+            const navButton = this.#AgregarElementoHTML({
+                _tipo: "button",
+                _id: "sidebarToggleTop",
+                _clases: "btn btn-link d-md-none rounded-circle mr-3",
+                _padre: navElement});
+            navButton.innerHTML = `<i class="fa fa-bars"></i>`;
+            
+        const navBar = this.#AgregarElementoHTML({
+            _tipo: "ul",
+            _clases: "navbar-nav ml-auto",
+            _padre: navElement});
+
+        //Alertas
+        const navBarAlerts = this.#AgregarElementoHTML({
+            _tipo: "li",
+            _clases: "nav-item dropdown no-arrow mx-1",
+            _padre: navBar});
+
+        const aAlertas = this.#AgregarElementoHTML({
+            _tipo: "a",
+            _clases: "nav-link dropdown-toggle",
+            _id: "alertsDropdown",
+            _href: "#",
+            _padre: navBarAlerts});
+        aAlertas.innerHTML = `<i class="fas fa-bell fa-fw"></i>
+        <span class="badge badge-danger badge-counter">1</span>`;
+        aAlertas.setAttribute('role','button');
+        aAlertas.setAttribute('data-toggle','dropdown');
+        aAlertas.setAttribute('aria-haspopup','true');
+        aAlertas.setAttribute('aria-expanded','false');
+        
+        const dropdownAlertas = this.#AgregarElementoHTML({
+            _clases: "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in",
+            _padre: navBarAlerts});
+        dropdownAlertas.setAttribute('aria-labelledby','alertsDropdown');
+        dropdownAlertas.innerHTML = `<h6 class="dropdown-header">
+                    Alertas
+                </h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="mr-3">
+                        <div class="icon-circle bg-success">
+                            <i class="fas fa-donate text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="small text-gray-500">Marzo, 2023</div>
+                        Bienvenid@ al divisor de Gastos!
+                    </div>
+                </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Ver todas las
+                    alertas</a>`;
+        //Mensajes
+
+
+        //Info User
+
+        
+
+        return navElement;
+    }
+
     #AgregarElementoHTML({_tipo,_id,_clases,_href,_padre}) {
         const element = this.#document.createElement(_tipo || "div");
         _id && (element.id = _id);
@@ -215,6 +281,14 @@ export default class HTMLhelper{
 
         const listaElement = this.#document.querySelector(".seccionDeudas ul");
         listaElement.append(element);
+    }
+
+    #cargarSBAdminScript(){
+        //Tengo que cargar dinámicamente el js del Template ya que si no algunas cosas estéticas no funcionan.
+        const fun = async function loadModule() {
+            await import("../../js/vendor/sb-admin-2.min.js");
+        }
+        fun();
     }
 
 

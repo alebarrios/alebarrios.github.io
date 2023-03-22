@@ -11,6 +11,10 @@ export default class Persona {
         this.#nombre = _nombre;
     }
 
+    static from(_obj){
+        return new Persona(_obj.nombrePersona);
+    }
+
     /**
      * Devuelve el nombre de la persona.
      * @return {string} el nombre.

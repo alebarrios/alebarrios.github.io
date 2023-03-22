@@ -1,4 +1,5 @@
 import Gasto, {TipoGasto} from "./gasto.js";
+import Persona from "./persona.js";
 
 /** Clase que representa un Integrante de un Grupo. */
 export default class IntegranteGrupo {
@@ -11,15 +12,16 @@ export default class IntegranteGrupo {
      * Crea un objeto tipo IntegranteGrupo.
      * @param {Persona} _persona - la persona integrante.
      */
-    constructor(_persona){
+    constructor(_id, _persona){
         this.#persona = _persona;
         this.#gastos = [];
+        this.#id = _id;
         //this.#grupo = _grupo;
         //this.#grupo.agregarIntegrante(this);
     }
 
     static from({idIntegrante, personaIntegrante, gastosIntegrante}) {
-        const nuevoIntegrante = new IntegranteGrupo(personaIntegrante);
+        const nuevoIntegrante = new IntegranteGrupo(idIntegrante, Persona.from(personaIntegrante));
         gastosIntegrante.forEach( (gastoObj) => {
             const gasto = Gasto.from(gastoObj);
             nuevoIntegrante.agregarGasto(gasto);
@@ -50,12 +52,12 @@ export default class IntegranteGrupo {
     }
 
     /**
-     * Devuelve el saldo actual del integrante.
-     * @return {number} el saldo actual.
+     * Devuelve un array con los Gastos del integrante.
+     * @return {array} todos los Gastos del Integrante.
      */
-/*     getSaldo(){
-        return this.#grupo.getSaldo(this);
-    } */
+     getGastos(){
+        return this.#gastos;
+    } 
 
     /**
      * Devuelve la persona del integrante.
@@ -63,6 +65,14 @@ export default class IntegranteGrupo {
      */
     getPersona(){
         return this.#persona;
+    }
+
+    /**
+     * Devuelve el Id del integrante.
+     * @return {number} la persona.
+     */
+    getId(){
+        return this.#id;
     }
 
     /**

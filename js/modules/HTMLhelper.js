@@ -120,15 +120,6 @@ export default class HTMLhelper{
         this.#AgregarElementoHTML({_clases: "text-center d-none d-md-inline",_padre: sideBarElement}).innerHTML 
             = `<button class="rounded-circle border-0" id="sidebarToggle"></button>`;
 
-
-        //Eventlisteners
-        misGrupoElement.addEventListener("click", () => {
-            console.log("hola viteh");
-            collapseGrupos.classList = "collapse";
-        });
-
-        
-
         return sideBarElement;
     }
 
@@ -293,7 +284,6 @@ export default class HTMLhelper{
         
         let cardArray = [];
            _arrayGrupos.forEach(element => {
-            console.log(element);
             const card = `<div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary"><span>
@@ -321,23 +311,23 @@ export default class HTMLhelper{
 
         return main;
     }
-
-    displayGrupoPage(){
+    
+    displayGrupoPage({info,integrantes,gastos,mensajeSaldos}){
         const main = this.#document.getElementById("main-content");
-        main.innerHTML = 
-        `<h1 class="h3 mb-0 text-gray-800">Grupo</h1>
+        const seccionInfo = `<h1 class="h3 mb-0 text-gray-800">Grupo</h1>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-            Informacion
-            </h6>     
-        </div>
-            <div class="card-body">
-            <p>Id del grupo: 1</p>
-            <p>Nombre del grupo: Viaje1</p>
-            <p>Cantidad de integrantes: 0</p>
+                <h6 class="m-0 font-weight-bold text-primary">
+                Informacion
+                </h6>     
             </div>
-        </div>
+            <div class="card-body">
+                <p>Id del grupo: ${info.id}</p>
+                <p>Nombre del grupo: ${info.nombre}</p>
+                <p>Cantidad de integrantes: ${info.cantIntegrantes}</p>
+            </div>
+        </div>`;
+        const seccionIntegrantes = `
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
@@ -345,34 +335,42 @@ export default class HTMLhelper{
                 </h6>     
             </div>
             <div class="card-body">
-            <ul class="list-group list-group-flush">
-            <li class="list-group-item">Usuario Coder</li>
-            <li class="list-group-item">Pedro</li>
-            <li class="list-group-item">Juan</li>
- 
-          </ul>
-            </div>
-        </div>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-            Gastos
-            </h6>     
-        </div>
-            <div class="card-body">
-            <p>Id del grupo: 1</p>
-            </div>
-        </div>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-            Saldos
-            </h6>     
-        </div>
-            <div class="card-body">
-            <p>Id del grupo: 1</p>
+                <ul class="list-group list-group-flush">` +
+                integrantes.map(element => {
+                    return `<li class="list-group-item">${element}</li>`; 
+                }).join("")
+            + `</ul>
             </div>
         </div>`;
+
+        const seccionGastos = 
+        `<div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                Gastos
+                </h6>     
+            </div>
+            <div class="card-body">
+                <ul class="list-group">` +
+                gastos.map(element => {
+                    return `<li class="list-group-item disabled">Importe: $${element.importe.toFixed(2)} - Integrante: ${element.nombreIntegrante}</li>`; 
+                }).join("")
+            + `</ul>
+            </div>
+        </div>`;
+        const seccionSaldos = 
+        `<div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                Saldos
+                </h6>     
+            </div>
+            <div class="card-body">` +
+                `<p>${mensajeSaldos}</p>` 
+            + `</div>
+        </div>`;
+
+        main.innerHTML = seccionInfo + seccionIntegrantes + seccionGastos + seccionSaldos;
 
      return main;
     }
@@ -389,6 +387,7 @@ export default class HTMLhelper{
                <p>En esta pre-entrega se integra el DOM y el uso de JSON + localStorage. Se permiten las siguientes funcionalidades:</p>
                <p class="mb-0">* Crear Grupos</p>
                <p class="mb-0">* Ver los Grupos creados</p>
+               <p class="mb-0">* Ver la información de cada grupo</p>
                <p class="mb-0">* Guardar los grupos en LocalStorage</p>
                <p class="mb-0">* Borrar la LocalStorage(desde el avatar de usuario)</p>
            </div>

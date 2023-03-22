@@ -33,12 +33,12 @@ export default class Grupo {
      */
     agregarIntegrante(_integrante){
 
-        if(this.#saldos.has(_integrante)) {
+        if(this.#saldos.has(_integrante.getId())) {
             console.log("Integrante ya existe en el grupo");
             return;
         };
 
-        this.#saldos.set(_integrante,0);
+        this.#saldos.set(_integrante.getId(),0);
         this.#integrantes.push(_integrante);
 
       this.#recalcularSaldos();
@@ -51,7 +51,7 @@ export default class Grupo {
      */
     registrarNuevoGasto(_gasto,_integrante){
         //console.log("registrando gasto");
-        if(!this.#saldos.has(_integrante)){
+        if(!this.#saldos.has(_integrante.getId())){
             console.log("Integrante no existe.");
             return;
         };
@@ -62,7 +62,7 @@ export default class Grupo {
         };
 
         _integrante.agregarGasto(_gasto);
-        this.#saldos.set(_integrante, this.#saldos.get(_integrante) + _gasto.getImporte());
+        this.#saldos.set(_integrante.getId(), this.#saldos.get(_integrante.getId()) + _gasto.getImporte());
         
         this.#recalcularSaldos();
     }
@@ -78,7 +78,7 @@ export default class Grupo {
         this.#integrantes.forEach((integrante) =>{
             gastosTotales += integrante.getGastoTotal();
             //console.log(`Asignando a: ${integrante.getPersona().getNombre()} ${integrante.getGastoTotal()}`);
-            this.#saldos.set(integrante,integrante.getGastoTotal());
+            this.#saldos.set(integrante.getId(),integrante.getGastoTotal());
         });
         //console.log(`Gastos totales: ${gastosTotales}`);
 
@@ -86,9 +86,9 @@ export default class Grupo {
         //console.log(`Saldo a repartir: ${saldoARepartir}`);
 
         this.#integrantes.forEach((integrante) =>{
-            let saldo = this.#saldos.get(integrante) - saldoARepartir;
+            let saldo = this.#saldos.get(integrante.getId()) - saldoARepartir;
             //console.log(`Saldo a asignar: ${saldo}`);
-            this.#saldos.set(integrante,saldo);
+            this.#saldos.set(integrante.getId(),saldo);
         });
 
     }
@@ -100,7 +100,7 @@ export default class Grupo {
         //console.log(`Estos son los saldos del grupo: ${this.#nombre}`);
         let arraySaldos = [];
         this.#integrantes.forEach((integrante) => {
-            arraySaldos.push(`El saldo de ${integrante.getPersona().getNombre()} es de ${integrante.getSaldo().toFixed(2)} pesos.`);
+            arraySaldos.push(`El saldo de ${integrante.getPersona().getNombre()} es de ${this.#saldos.get(integrante.getId()).toFixed(2)} pesos.`);
             //console.log(arraySaldos);
             
         });
@@ -120,6 +120,8 @@ export default class Grupo {
 
         //mientras existan integrantes que tengan saldo negativo...
         let deudor = integrantes.shift(); //Remuevo y tomo el primer Integrante del array. [Integrante,saldo]
+        deudor[0] = this.#integrantes.find((elem) => elem.getId() === deudor[0]);    
+        
         let arrayDeudas = [];
 
         while(deudor[1] < 0){ //mientra haya deudores...
@@ -128,6 +130,7 @@ export default class Grupo {
             //itero sobre los integrantes que tienen mas saldo a favor hacia el menor
             for (let j = integrantes.length - 1; j >= 0; j--) {
                 const integrante = integrantes[j];
+                integrante[0] = this.#integrantes.find((elem) => elem.getId() === integrante[0]);
                 const nombreIntegrante = integrante[0].getPersona().getNombre();
                 //console.log(`Tomo integrante ${nombreIntegrante} que tiene un saldo de ${integrante[1]}`);
                 if(integrantes[j][1] > 0){ //si el otro integrante tiene saldo a favor...
@@ -154,6 +157,7 @@ export default class Grupo {
             //console.log(`La Deuda de ${nombreDeudor} quedó en ${deudor[1]}`);
             //if(deudor[1] <= 0) { // si el deudor ya saldó su deuda..
                 deudor = integrantes.shift(); //Remuevo y tomo el nuevo deudor.
+                deudor[0] = this.#integrantes.find((elem) => elem.getId() === deudor[0]);
             //};
             
         };
@@ -171,6 +175,20 @@ export default class Grupo {
     }
 
     /**
+     * Obtiene un array de objectos con los Gastos de todos los Integrantes del Grupo.
+     * @return {array} con todos los Gastos.
+     */
+        getGastos(){
+            const gastos = [];
+            this.#integrantes.forEach((integrante) => {
+                integrante.getGastos().forEach( (gasto) => {
+                    gastos.push({importe: gasto.getImporte(), nombreIntegrante: integrante.getPersona().getNombre()}); 
+                });
+            });
+            return gastos;
+        }
+
+    /**
      * Obtiene el nombre del grupo.
      * @return {string} el nombre.
      */
@@ -184,7 +202,7 @@ export default class Grupo {
      * @return {string} el saldo del integrante.
      */
     getSaldo(_integrante){
-        return parseFloat(this.#saldos.get(_integrante));
+        return parseFloat(this.#saldos.get(_integrante.getId()));
     }
 
     /**

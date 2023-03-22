@@ -1,13 +1,13 @@
 import Gasto, {TipoGasto} from "./modules/gasto.js";
 import Persona from "./modules/persona.js";
 import IntegranteGrupo from "./modules/integrante-grupo.js";
-import Grupo from "./modules/grupo.js";
-import HTMLhelper from "./modules/HTMLhelper.js";
+
+import Controller from "./modules/controller.js";
 
 /** Funcion que simula la carga de gastos e integrantes a un grupo de personas. */
 function aplicacion() {
 
-    const myHTMLhelper = new HTMLhelper(document); 
+    const myController = new Controller();
     
  /*    let nombreGrupo = prompt("Bienvenido/a al divisor de gastos. Por favor, ingrese el nombre de su grupo:");
     if(nombreGrupo === null) { return };

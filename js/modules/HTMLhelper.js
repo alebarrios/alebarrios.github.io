@@ -37,6 +37,7 @@ export default class HTMLhelper{
         
         //Container Fluid - Page content
         const containerFluidElement = this.#AgregarElementoHTML({
+            _id: "main-content",
             _clases: "container-fluid",
             _padre: contentElement}); 
             
@@ -90,12 +91,24 @@ export default class HTMLhelper{
             _id: "collapsePages",
             _href: "#",
             _padre: grupoSidebar});
-        collapseGrupos.innerHTML = `<div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="#">Crear Grupo</a>
-            <a class="collapse-item" href="#">Mis Grupos</a>
-            <div class="collapse-divider"></div></div>`;
         collapseGrupos.setAttribute('aria-labelledby','headingPages');
         collapseGrupos.setAttribute('data-parent','#accordionSidebar');
+
+        const collapseGruposInnerElement = this.#AgregarElementoHTML({
+            _clases: "bg-white py-2 collapse-inner rounded",
+            _padre: collapseGrupos});
+
+        const crearGrupoElement = this.#AgregarElementoHTML({
+            _id: "crear-grupo-item",
+            _clases: "collapse-item",
+            _padre: collapseGruposInnerElement});
+        crearGrupoElement.innerHTML = "Crear Grupo";
+
+        const misGrupoElement = this.#AgregarElementoHTML({
+            _id: "mis-grupos-item",
+            _clases: "collapse-item",
+            _padre: collapseGruposInnerElement});
+        misGrupoElement.innerHTML = "Mis Grupos";
 
         //Seccion Gastos Sidebar
         const gastoSidebar = this.#AgregarElementoHTML({_tipo: "li",_clases: "nav-item",_padre: sideBarElement});
@@ -128,6 +141,15 @@ export default class HTMLhelper{
         //SidebarToggleButton
         this.#AgregarElementoHTML({_clases: "text-center d-none d-md-inline",_padre: sideBarElement}).innerHTML 
             = `<button class="rounded-circle border-0" id="sidebarToggle"></button>`;
+
+
+        //Eventlisteners
+        misGrupoElement.addEventListener("click", () => {
+            console.log("hola viteh");
+            collapseGrupos.classList = "collapse";
+        });
+
+        
 
         return sideBarElement;
     }
@@ -257,35 +279,6 @@ export default class HTMLhelper{
         return element;
     }
 
-    #viejoinicializarHTML(){
-        const headerElement = this.#document.createElement("header");
-        headerElement.classList.add("intro");
-        const containerElement = this.#document.createElement("div");
-        containerElement.classList.add("container");
-        headerElement.append(containerElement);
-        containerElement.innerHTML = `<h1>Segunda Pre-Entrega del proyecto final</h1>`;
-        
-
-        const mainElement = this.#document.createElement("main");
-
-        const footerElement = this.#document.createElement("footer");
-        footerElement.innerHTML = `Alejandro Barrios - Coderhouse`;
-        
-        const seccion1Element = this.#document.createElement("section");
-        seccion1Element.className = "seccionGastos";
-
-        const seccion2Element = this.#document.createElement("section");
-        seccion2Element.className = "seccionSaldos";
-
-        const seccion3Element = this.#document.createElement("section");
-        seccion3Element.className = "seccionDeudas";
-
-        mainElement.append(seccion1Element, seccion2Element, seccion3Element);
-
-        this.#document.body.append(headerElement, mainElement, footerElement);
-        
-    }
-
     agregarGrupoAlDOM(nombreGrupo){
         const seccion1Element = this.#document.querySelector(".seccionGastos");
         const seccion2Element = this.#document.querySelector(".seccionSaldos");
@@ -339,6 +332,53 @@ export default class HTMLhelper{
             await import("../../js/vendor/sb-admin-2.min.js");
         }
         fun();
+    }
+
+    getItemHTML(id){
+        return this.#document.getElementById(id);
+    }
+
+    displayNuevoGrupoPage(){
+        this.#document.getElementById("collapsePages").classList = "collapse";
+            const main = this.#document.getElementById("main-content");
+           main.innerHTML = 
+           `<h1 class="h3 mb-0 text-gray-800">Nuevo Grupo</h1>
+           <form class="form-inline" id="form-crear-grupo">
+           <label class="sr-only" for="nombre">Name</label>
+           <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+
+           <button type="submit" class="btn btn-primary mb-2">Submit</button>
+         </form>`;
+         return main;
+    }
+
+    displayMisGruposPage(_arrayNombres){
+        this.#document.getElementById("collapsePages").classList = "collapse";
+        const main = this.#document.getElementById("main-content");
+        
+        let cardArray = [];
+           _arrayNombres.forEach(element => {
+            console.log(element);
+            const card = `<div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">${element}</h6>
+            </div>
+            <div class="card-body">
+                Nombre del grupo: ${element}
+            </div>
+        </div>`;
+            cardArray.push(card);
+        });
+
+        const cards = cardArray.join(" ") || `<div class="alert alert-secondary" role="alert">
+        Aun no hay grupos creados :(
+      </div>`;
+
+        main.innerHTML = 
+           `<h1 class="h3 mb-0 text-gray-800">Mis Grupos</h1>
+           ` + cards;
+
+        return main;
     }
 
 

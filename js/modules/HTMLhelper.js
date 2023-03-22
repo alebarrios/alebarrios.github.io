@@ -40,6 +40,8 @@ export default class HTMLhelper{
             _id: "main-content",
             _clases: "container-fluid",
             _padre: contentElement}); 
+
+        this.displayDashboardPage();
             
     }
 
@@ -62,8 +64,9 @@ export default class HTMLhelper{
         
         this.#AgregarElementoHTML({
             _tipo: "li",
+            _id: "dashboard-item",
             _clases: "nav-item",
-            _padre: sideBarElement}).innerHTML = `<a class="nav-link" href="index.html">
+            _padre: sideBarElement}).innerHTML = `<a class="nav-link" href="#">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>`;
 
@@ -110,31 +113,6 @@ export default class HTMLhelper{
             _padre: collapseGruposInnerElement});
         misGrupoElement.innerHTML = "Mis Grupos";
 
-        //Seccion Gastos Sidebar
-        const gastoSidebar = this.#AgregarElementoHTML({_tipo: "li",_clases: "nav-item",_padre: sideBarElement});
-                
-        const aGastos = this.#AgregarElementoHTML({
-            _tipo: "a",
-            _clases: "nav-link collapsed",
-            _href: "#",
-            _padre: gastoSidebar});
-        aGastos.innerHTML = `<i class="fas fa-fw fa-folder"></i><span>Gastos</span>`;
-        aGastos.setAttribute('data-toggle','collapse');
-        aGastos.setAttribute('data-target','#collapseGastos');
-        aGastos.setAttribute('aria-expanded','true');
-        aGastos.setAttribute('aria-controls','collapseGastos');
-
-        const collapseGastos = this.#AgregarElementoHTML({
-            _clases: "collapse",
-            _id: "collapseGastos",
-            _href: "#",
-            _padre: gastoSidebar});
-        collapseGastos.innerHTML = `<div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="#">Crear Gasto</a>
-            <a class="collapse-item" href="#">Mis Gastos</a>
-            <div class="collapse-divider"></div></div>`;
-        collapseGastos.setAttribute('aria-labelledby','headingGastos');
-        collapseGastos.setAttribute('data-parent','#accordionSidebar');
 
         //Divider
         this.#AgregarElementoHTML({_tipo: "hr",_clases: "sidebar-divider d-none d-md-block",_padre: sideBarElement});
@@ -264,8 +242,8 @@ export default class HTMLhelper{
             _clases: "dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in",
             _padre: navBarUser});
         dropdownUser.setAttribute('aria-labelledby','userDropdown');
-        dropdownUser.innerHTML = `<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>Salir</a>`;
+        dropdownUser.innerHTML = `<a id="borrar-localStorage" class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>Borrar localStorage</a>`;
 
         return navElement;
     }
@@ -279,53 +257,6 @@ export default class HTMLhelper{
         return element;
     }
 
-    agregarGrupoAlDOM(nombreGrupo){
-        const seccion1Element = this.#document.querySelector(".seccionGastos");
-        const seccion2Element = this.#document.querySelector(".seccionSaldos");
-        const seccion3Element = this.#document.querySelector(".seccionDeudas");
-        
-        const headerSeccion1Elem = this.#document.createElement("header");
-        const listaGastosElem = this.#document.createElement("ul");
-        headerSeccion1Elem.innerHTML = `<h2>Gastos del Grupo: ${nombreGrupo}</h2>`;
-
-        const headerSeccion2Elem = this.#document.createElement("header");
-        const listaSaldosElem = this.#document.createElement("ul");
-        headerSeccion2Elem.innerHTML = `<h2>Saldos de Integrantes del Grupo: ${nombreGrupo}</h2>`;
-
-        const headerSeccion3Elem = this.#document.createElement("header");
-        const listaDeudasElem = this.#document.createElement("ul");
-        headerSeccion3Elem.innerHTML = `<h2>Deudas de Integrantes del Grupo: ${nombreGrupo}</h2>`;
-
-        seccion1Element.append(headerSeccion1Elem, listaGastosElem);
-        seccion2Element.append(headerSeccion2Elem, listaSaldosElem);
-        seccion3Element.append(headerSeccion3Elem, listaDeudasElem);
-    }
-
-     agregarGastoAlDOM({fecha, tipoGasto, importe, nombreIntegrante}){
-        
-        const element = this.#document.createElement("li");
-        element.innerHTML = `${fecha} | ${tipoGasto} | $ ${importe.toFixed(2)} | ${nombreIntegrante}`;
-
-        const listaElement = this.#document.querySelector(".seccionGastos ul");
-        listaElement.append(element);     
-    }
-
-    agregarSaldoAlDOM(stringSaldo){
-        const element = this.#document.createElement("li");
-        element.innerHTML = stringSaldo;
-
-        const listaElement = this.#document.querySelector(".seccionSaldos ul");
-        listaElement.append(element);
-    }
-
-    agregarDeudaAlDOM(stringDeuda){
-        const element = this.#document.createElement("li");
-        element.innerHTML = stringDeuda;
-
-        const listaElement = this.#document.querySelector(".seccionDeudas ul");
-        listaElement.append(element);
-    }
-
     #cargarSBAdminScript(){
         //Tengo que cargar dinámicamente el js del Template ya que si no algunas cosas estéticas no funcionan.
         const fun = async function loadModule() {
@@ -336,6 +267,10 @@ export default class HTMLhelper{
 
     getItemHTML(id){
         return this.#document.getElementById(id);
+    }
+
+    queryHTML(id){
+        return this.#document.querySelector(id);
     }
 
     displayNuevoGrupoPage(){
@@ -352,19 +287,25 @@ export default class HTMLhelper{
          return main;
     }
 
-    displayMisGruposPage(_arrayNombres){
+    displayMisGruposPage(_arrayGrupos){
         this.#document.getElementById("collapsePages").classList = "collapse";
         const main = this.#document.getElementById("main-content");
         
         let cardArray = [];
-           _arrayNombres.forEach(element => {
+           _arrayGrupos.forEach(element => {
             console.log(element);
             const card = `<div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">${element}</h6>
+                <h6 class="m-0 font-weight-bold text-primary"><span>
+                <a href="#" class="btn-sm btn-info btn-circle" data-id='grupo-${element.id}'>
+                <i class="fas fa-info-circle"></i></a>
+                </span>${element.nombre}
+                </h6>     
             </div>
             <div class="card-body">
-                Nombre del grupo: ${element}
+            <p>Id del grupo: ${element.id}</p>
+            <p>Nombre del grupo: ${element.nombre}</p>
+            <p>Cantidad de integrantes: ${element.cantIntegrantes}</p>
             </div>
         </div>`;
             cardArray.push(card);
@@ -379,6 +320,80 @@ export default class HTMLhelper{
            ` + cards;
 
         return main;
+    }
+
+    displayGrupoPage(){
+        const main = this.#document.getElementById("main-content");
+        main.innerHTML = 
+        `<h1 class="h3 mb-0 text-gray-800">Grupo</h1>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+            Informacion
+            </h6>     
+        </div>
+            <div class="card-body">
+            <p>Id del grupo: 1</p>
+            <p>Nombre del grupo: Viaje1</p>
+            <p>Cantidad de integrantes: 0</p>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                Integrantes
+                </h6>     
+            </div>
+            <div class="card-body">
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item">Usuario Coder</li>
+            <li class="list-group-item">Pedro</li>
+            <li class="list-group-item">Juan</li>
+ 
+          </ul>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+            Gastos
+            </h6>     
+        </div>
+            <div class="card-body">
+            <p>Id del grupo: 1</p>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+            Saldos
+            </h6>     
+        </div>
+            <div class="card-body">
+            <p>Id del grupo: 1</p>
+            </div>
+        </div>`;
+
+     return main;
+    }
+
+    displayDashboardPage(){
+        this.#document.getElementById("collapsePages").classList = "collapse";
+        const main = this.#document.getElementById("main-content");
+           main.innerHTML = 
+           `<div class="card shadow mb-4">
+           <div class="card-header py-3">
+               <h6 class="m-0 font-weight-bold text-primary">Divisor de Gastos - 3ra Pre-Entrega</h6>
+           </div>
+           <div class="card-body">
+               <p>En esta pre-entrega se integra el DOM y el uso de JSON + localStorage. Se permiten las siguientes funcionalidades:</p>
+               <p class="mb-0">* Crear Grupos</p>
+               <p class="mb-0">* Ver los Grupos creados</p>
+               <p class="mb-0">* Guardar los grupos en LocalStorage</p>
+               <p class="mb-0">* Borrar la LocalStorage(desde el avatar de usuario)</p>
+           </div>
+       </div>`;
+         return main;
     }
 
 

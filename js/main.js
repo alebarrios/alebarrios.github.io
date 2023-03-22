@@ -1,7 +1,3 @@
-import Gasto, {TipoGasto} from "./modules/gasto.js";
-import Persona from "./modules/persona.js";
-import IntegranteGrupo from "./modules/integrante-grupo.js";
-
 import Controller from "./modules/controller.js";
 
 /** Funcion que simula la carga de gastos e integrantes a un grupo de personas. */

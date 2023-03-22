@@ -1,5 +1,6 @@
 /** Clase que representa una persona. */
 export default class Persona {
+    #id;
     #nombre;
 
     /**
@@ -16,6 +17,18 @@ export default class Persona {
      */
     getNombre(){
         return this.#nombre;
+    }
+
+    /**
+    * Retorna un string en formato JSON con los datos de la Persona.
+    * @return {string} la Persona en formato JSON.
+    */
+    getJSON(){
+        const obj = {
+            idPersona: this.#id,
+            nombrePersona: this.#nombre,
+        };
+        return JSON.stringify(obj);
     }
                               
 };

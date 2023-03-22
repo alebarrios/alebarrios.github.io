@@ -8,6 +8,7 @@ export const TipoGasto = {
 
 /** Clase que representa un gasto. */
 export default class Gasto {
+    #id;
     #importe;
     #fecha = {};
     #tipoGasto;
@@ -21,6 +22,12 @@ export default class Gasto {
         this.#importe = parseFloat(_importe);
         this.#fecha = new Date();
         this.#tipoGasto = _tipoGasto;
+    }
+
+    static from({idGasto, importeGasto, fechaGasto, tipoGasto}){
+        const nuevoGasto = new Gasto(importeGasto,tipoGasto);
+        nuevoGasto.setFecha(fechaGasto);
+        return nuevoGasto;
     }
 
     /**
@@ -39,11 +46,29 @@ export default class Gasto {
         return this.#fecha;
     }
 
+    setFecha(_fecha){
+        this.#fecha = _fecha;
+    }
+
     /**
      * Obtiene el tipo del gasto.
      * @return {string} el importe.
      */
     getTipoGasto(){
         return this.#tipoGasto;
+    }
+
+    /**
+    * Retorna un string en formato JSON con los datos del Gasto.
+    * @return {string} el Gasto en formato JSON.
+    */
+    getJSON(){
+        const obj = {
+            idGasto: this.#id,
+            importeGasto: this.#importe,
+            tipoGasto: this.#tipoGasto,
+            fechaGasto: this.#fecha
+        };
+        return JSON.stringify(obj);
     }
 };

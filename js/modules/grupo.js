@@ -1,5 +1,8 @@
+import IntegranteGrupo from "./integrante-grupo.js";
+
 /** Clase que representa un Grupo donde se registran gastos. */
 export default class Grupo {
+    #id;
     #nombre;
     #integrantes;
     #saldos;
@@ -8,10 +11,20 @@ export default class Grupo {
      * Crea un objeto tipo Grupo.
      * @param {string} _nombre - el nombre del Grupo.
      */
-    constructor(_nombre){
+    constructor(_id , _nombre){
+        this.#id = _id;
         this.#nombre = _nombre;
         this.#saldos = new Map();
         this.#integrantes = [];
+    }
+
+    static from({idGrupo, nombreGrupo, integrantes}) {
+        const nuevoGrupo = new Grupo(idGrupo, nombreGrupo);
+        integrantes.forEach((integrante) => {
+            const nuevoIntegrante = IntegranteGrupo.from(integrante);
+            nuevoGrupo.agregarIntegrante(nuevoIntegrante);
+        })
+        return nuevoGrupo;
     }
 
     /**
@@ -19,7 +32,6 @@ export default class Grupo {
      * @param {IntegranteGrupo} _integrante - el nuevo integrante a agregar.
      */
     agregarIntegrante(_integrante){
-        //console.log(`Agregando integrante ${_integrante.getPersona().getNombre()}`);
 
         if(this.#saldos.has(_integrante)) {
             console.log("Integrante ya existe en el grupo");
@@ -173,5 +185,34 @@ export default class Grupo {
      */
     getSaldo(_integrante){
         return parseFloat(this.#saldos.get(_integrante));
+    }
+
+    /**
+    * Obtiene el Id del Grupo.
+    * @return {number} el Id del Grupo.
+    */
+    getId(){
+        return this.#id;
+    }
+
+    /**
+    * Obtiene el array de Integrantes del Grupo.
+    * @return {array} el array de Integrantes.
+    */
+    getIntegrantes(){
+        return this.#integrantes;
+    }
+
+    /**
+    * Retorna un string en formato JSON con los datos del Grupo.
+    * @return {string} el Grupo en formato JSON.
+    */
+    getJSON(){
+        const obj = {
+            idGrupo: this.#id,
+            nombreGrupo: this.#nombre,
+            integrantes: this.#integrantes.map((item) => JSON.parse(item.getJSON()))
+        };
+        return JSON.stringify(obj);
     }
 };

@@ -1,19 +1,31 @@
+import Gasto, {TipoGasto} from "./gasto.js";
+
 /** Clase que representa un Integrante de un Grupo. */
 export default class IntegranteGrupo {
+    #id;
     #persona;
     #gastos;
-    #grupo;
+    //#grupo;
 
     /**
      * Crea un objeto tipo IntegranteGrupo.
      * @param {Persona} _persona - la persona integrante.
-     * @param {Grupo} _grupo - el grupo a donde integrarse.
      */
-    constructor(_persona, _grupo){
+    constructor(_persona){
         this.#persona = _persona;
         this.#gastos = [];
-        this.#grupo = _grupo;
-        this.#grupo.agregarIntegrante(this);
+        //this.#grupo = _grupo;
+        //this.#grupo.agregarIntegrante(this);
+    }
+
+    static from({idIntegrante, personaIntegrante, gastosIntegrante}) {
+        const nuevoIntegrante = new IntegranteGrupo(personaIntegrante);
+        gastosIntegrante.forEach( (gastoObj) => {
+            const gasto = Gasto.from(gastoObj);
+            nuevoIntegrante.agregarGasto(gasto);
+        });
+        
+        return nuevoIntegrante;
     }
 
     /**
@@ -41,9 +53,9 @@ export default class IntegranteGrupo {
      * Devuelve el saldo actual del integrante.
      * @return {number} el saldo actual.
      */
-    getSaldo(){
+/*     getSaldo(){
         return this.#grupo.getSaldo(this);
-    }
+    } */
 
     /**
      * Devuelve la persona del integrante.
@@ -52,4 +64,17 @@ export default class IntegranteGrupo {
     getPersona(){
         return this.#persona;
     }
+
+    /**
+    * Retorna un string en formato JSON con los datos de la Integrante.
+    * @return {string} el Integrante en formato JSON.
+    */
+        getJSON(){
+            const obj = {
+                idIntegrante: this.#id,
+                personaIntegrante: JSON.parse(this.#persona.getJSON()),
+                gastosIntegrante: this.#gastos.map((item) => JSON.parse(item.getJSON()))
+            };
+            return JSON.stringify(obj);
+        }
 };

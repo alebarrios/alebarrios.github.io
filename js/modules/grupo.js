@@ -114,40 +114,36 @@ export default class Grupo {
      * Devuelve un string con las deudas de todos los integrantes del grupo.
      */
     calcularDeudasPendientes(){
-        //Creo un Array con los saldos de los integrantes ordenados ascendentemente.
-        let integrantes = new Array([...this.#saldos.entries()].sort((a, b) => a[1] - b[1]));
-        integrantes = integrantes[0];
+        //Creo un Array de 2 dimensiones con los saldos de los integrantes ordenados ascendentemente.
+        //[[id,saldo],[id,saldo]]
 
-        //mientras existan integrantes que tengan saldo negativo...
-        let deudor = integrantes.shift(); //Remuevo y tomo el primer Integrante del array. [Integrante,saldo]
-        deudor[0] = this.#integrantes.find((elem) => elem.getId() === deudor[0]);    
+        let integrantes = Object.entries(Object.fromEntries(this.#saldos)).sort((a, b) => a[1] - b[1]);
+        integrantes = integrantes.map((i) => 
+        {return [this.#integrantes.find((elem) => elem.getId() == i[0])?.getPersona().getNombre(),i[1]] });
         
+        let deudor = integrantes.shift(); //Remuevo y tomo el primer Integrante del array. [Integrante,saldo]    
         let arrayDeudas = [];
-
-        while(deudor[1] < 0){ //mientra haya deudores...
-            const nombreDeudor = deudor[0].getPersona().getNombre();
-            //console.log(`Deudor ${nombreDeudor} tiene inicialmente una deuda de ${deudor[1]}`);
+        
+        while(deudor[1] < 0){ //mientras existan integrantes que tengan saldo negativo...
             //itero sobre los integrantes que tienen mas saldo a favor hacia el menor
             for (let j = integrantes.length - 1; j >= 0; j--) {
                 const integrante = integrantes[j];
-                integrante[0] = this.#integrantes.find((elem) => elem.getId() === integrante[0]);
-                const nombreIntegrante = integrante[0].getPersona().getNombre();
                 //console.log(`Tomo integrante ${nombreIntegrante} que tiene un saldo de ${integrante[1]}`);
-                if(integrantes[j][1] > 0){ //si el otro integrante tiene saldo a favor...
+                if(integrante[1] > 0){ //si el otro integrante tiene saldo a favor...
                     const saldoAFavor = integrante[1];
                     const deuda = (deudor[1] * -1);
                     if(deuda - saldoAFavor > 0 ) {
                         //El deudor sigue moroso, se salda la deuda con el otro integrante.
                         deudor[1] += saldoAFavor;
                         integrantes[j][1] = 0;
-                        let mensajeDeuda = `${nombreDeudor} le debe a ${nombreIntegrante} : ${saldoAFavor.toFixed(2)} pesos`;
+                        let mensajeDeuda = `${deudor[0]} le debe a ${integrante[0]} : ${saldoAFavor.toFixed(2)} pesos`;
                         //console.log(newMensaje);
                         arrayDeudas.push(mensajeDeuda);
                     } else{
                         //El deudor deja de estar moroso, pero el otro integrante aun tiene saldo a favor (o cero).
                             deudor[1] = 0;
                             integrantes[j][1] = saldoAFavor - deuda;
-                            let mensajeDeuda = `${nombreDeudor} le debe a ${nombreIntegrante} : ${deuda.toFixed(2)} pesos`;
+                            let mensajeDeuda = `${deudor[0]} le debe a ${integrante[0]} : ${deuda.toFixed(2)} pesos`;
                             //console.log(newMensaje);
                             arrayDeudas.push(mensajeDeuda);
                             break;
@@ -155,11 +151,7 @@ export default class Grupo {
                 };
             };
             //console.log(`La Deuda de ${nombreDeudor} quedó en ${deudor[1]}`);
-            //if(deudor[1] <= 0) { // si el deudor ya saldó su deuda..
-                deudor = integrantes.shift(); //Remuevo y tomo el nuevo deudor.
-                deudor[0] = this.#integrantes.find((elem) => elem.getId() === deudor[0]);
-            //};
-            
+            deudor = integrantes.shift(); //Remuevo y tomo el nuevo deudor.   
         };
         return arrayDeudas;
     }

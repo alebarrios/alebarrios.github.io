@@ -82,8 +82,8 @@ export default class Controller {
                     
                     const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
                     const gastos = group.getGastos();
-                    //const mensajeSaldos = group.calcularSaldos() + group.calcularDeudasPendientes();
-                    const mensajeSaldos = "Pendiente...";
+                    const mensajeSaldos = group.calcularDeudasPendientes();
+                    //const mensajeSaldos = "Pendiente...";
                     this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastos, mensajeSaldos});
                     });
             });

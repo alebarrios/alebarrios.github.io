@@ -366,7 +366,7 @@ export default class HTMLhelper{
                 </h6>     
             </div>
             <div class="card-body">` +
-                `<p>${mensajeSaldos}</p>` 
+                mensajeSaldos.map(mensaje => `<p>${mensaje}</p>`).join("") 
             + `</div>
         </div>`;
 

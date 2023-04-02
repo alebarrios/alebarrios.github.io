@@ -239,9 +239,11 @@ export default class HTMLhelper{
         return navElement;
     }
 
-    #AgregarElementoHTML({_tipo,_id,_clases,_href,_padre}) {
+    #AgregarElementoHTML({_tipo,_id,_type,_name,_clases,_href,_padre}) {
         const element = this.#document.createElement(_tipo || "div");
         _id && (element.id = _id);
+        _type && (element.type = _type);
+        _name && (element.name = _name);
         _clases && (element.classList = _clases);
         _href && (element.href = _href);
         (_padre || this.#document.body)?.append(element);
@@ -268,13 +270,40 @@ export default class HTMLhelper{
         this.#document.getElementById("collapsePages").classList = "collapse";
             const main = this.#document.getElementById("main-content");
            main.innerHTML = 
-           `<h1 class="h3 mb-0 text-gray-800">Nuevo Grupo</h1>
-           <form class="form-inline" id="form-crear-grupo">
-           <label class="sr-only" for="nombre">Name</label>
-           <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                `<h1 class="h3 mb-0 text-gray-800">Nuevo Grupo</h1>
+                <div class="row">
+                <div class="col-xl-6 col-md-6 mb-4">
+                <form class="form" id="form-crear-grupo">
+                <label class="sr-only" for="nombre">Name</label>
+                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                <div class="radio">
+                
+                <input type="radio" class="btn-check" name="options" id="option1" value="viaje" autocomplete="off" checked />
+                <label class="btn btn-outline-primary" for="option1">
+                <i class="fas fa-fw fa-plane"></i>Viaje</label>
+                
+                <input type="radio" class="btn-check" name="options" id="option2" value="amigos" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="option2">
+                <i class="fas fa-fw fa-users"></i>Amigos</label>
 
-           <button type="submit" class="btn btn-primary mb-2">Submit</button>
-         </form>`;
+                <input type="radio" class="btn-check" name="options" id="option3" value="pareja" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="option3">
+                <i class="fas fa-fw fa-heart"></i>Pareja</label>
+
+                <input type="radio" class="btn-check" name="options" id="option4" value="otros" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="option4">Otros</label>
+                </div>
+                <div class="input-group mb-3">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon1"><i class="fas fa-fw fa-plus"></i>Integrante</button>
+                <input type="text" class="form-control" placeholder="Nombre integrante"  id="text-button-addon1">
+                </div>
+                <ul class="list-group" id="listaNuevoIntegrante">
+                <li class="list-group-item disabled">Usuario Coder (Yo)</li>
+                </ul>
+                <button type="submit" class="btn btn-primary mb-2">Crear</button>
+                </form></div></div>`;
+                
+                        
          return main;
     }
 
@@ -324,6 +353,7 @@ export default class HTMLhelper{
             <div class="card-body">
                 <p>Id del grupo: ${info.id}</p>
                 <p>Nombre del grupo: ${info.nombre}</p>
+                <p>Tipo del grupo: ${info.tipoGrupo}</p>
                 <p>Cantidad de integrantes: ${info.cantIntegrantes}</p>
             </div>
         </div>`;
@@ -395,5 +425,22 @@ export default class HTMLhelper{
          return main;
     }
 
+    agregarIntegrante(id,nombre){
+        const lista = this.#document.getElementById(id);
+
+        const item = this.#AgregarElementoHTML({
+            _tipo: "li",
+            _clases: "list-group-item",
+            _padre: lista});
+        item.innerHTML = `${nombre} <i class="fas fa-fw fa-trash"></i>`;
+
+        const itemHidden = this.#AgregarElementoHTML({
+            _tipo: "input",
+            _type: "hidden",
+            _name: "integrantesLista",
+            _id: id,
+            _padre: lista});
+        itemHidden.value = nombre;
+    }
 
 }

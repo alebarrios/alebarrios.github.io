@@ -29,3 +29,7 @@
   .intro-content {
     width: 50%;
   }
+
+  #collapsePages {
+    z-index: 3;
+  }

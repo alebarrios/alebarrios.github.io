@@ -30,18 +30,27 @@ export default class Controller {
             const main = this.#myHTMLhelper.displayNuevoGrupoPage();
             const formElem = this.#myHTMLhelper.getItemHTML("form-crear-grupo");
             formElem.addEventListener("submit", (e) => {
-
                 e.preventDefault();
+                let idgrupo = this.#myGroups.length + 1;
+                 
                 const formElements = e.target.elements;
                 if (formElements.nombre.value) {
-                    const nuevoGrupo = new Grupo(this.#myGroups.length + 1,formElements.nombre.value);
+                    //let tipoGrupo = Grupo.makeEnum(formElements.);
+                    console.log(formElements);
+                    const nuevoGrupo = 
+                        new Grupo(idgrupo,formElements.nombre.value, Grupo.makeEnum(formElements.options.value));
+                        
+                    let idIntegrante = nuevoGrupo.getIntegrantes().length;
+                    //Agrego al usuario principal al grupo
                     nuevoGrupo.agregarIntegrante(
-                        new IntegranteGrupo(nuevoGrupo.getIntegrantes().length + 1,this.#persona));
-                    // agrego dos integrantes Extra
-                    nuevoGrupo.agregarIntegrante(
-                        new IntegranteGrupo(nuevoGrupo.getIntegrantes().length + 1,new Persona("Juan")));
-                    nuevoGrupo.agregarIntegrante(
-                        new IntegranteGrupo(nuevoGrupo.getIntegrantes().length + 1,new Persona("Damian")));
+                        new IntegranteGrupo(idIntegrante++,this.#persona));
+                    
+                    //Agrego otros integrantes
+                    formElements.integrantesLista.forEach( (i) => {
+                        console.log(i.value);
+                        nuevoGrupo.agregarIntegrante(
+                            new IntegranteGrupo(idIntegrante++,new Persona(i.value)));
+                    });
 
                     // Registro un gasto "random" a cada Integrante
                     nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[0]);
@@ -57,6 +66,14 @@ export default class Controller {
                     this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
                 }
                    
+            });
+
+            const addIntegranteButton = this.#myHTMLhelper.getItemHTML("button-addon1");
+            addIntegranteButton.addEventListener("click", (e) => {
+                console.log(e.target);
+                const integrante = this.#myHTMLhelper.getItemHTML("text-button-addon1");
+                this.#myHTMLhelper.agregarIntegrante("listaNuevoIntegrante",integrante.value);
+                integrante.value = "";
             });
         });
         
@@ -78,7 +95,8 @@ export default class Controller {
                     const info = {
                         id: group.getId(), 
                         nombre: group.getNombre(), 
-                        cantIntegrantes: group.getIntegrantes().length };
+                        cantIntegrantes: group.getIntegrantes().length,
+                        tipoGrupo: group.getTipoGrupo() };
                     
                     const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
                     const gastos = group.getGastos();

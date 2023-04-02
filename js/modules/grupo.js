@@ -1,21 +1,30 @@
 import IntegranteGrupo from "./integrante-grupo.js";
 
+export const TipoGrupo = {
+    VIAJE : Symbol("viaje"),
+    AMIGOS : Symbol("amigos"),
+    PAREJA : Symbol("pareja"),
+    OTROS : Symbol("otros")
+}
+
 /** Clase que representa un Grupo donde se registran gastos. */
 export default class Grupo {
     #id;
     #nombre;
     #integrantes;
     #saldos;
+    #tipoGrupo;
 
     /**
      * Crea un objeto tipo Grupo.
      * @param {string} _nombre - el nombre del Grupo.
      */
-    constructor(_id , _nombre){
+    constructor(_id , _nombre, _tipoGrupo = TipoGrupo.OTROS){
         this.#id = _id;
         this.#nombre = _nombre;
         this.#saldos = new Map();
         this.#integrantes = [];
+        this.#tipoGrupo = _tipoGrupo;
     }
 
     static from({idGrupo, nombreGrupo, integrantes}) {
@@ -25,6 +34,19 @@ export default class Grupo {
             nuevoGrupo.agregarIntegrante(nuevoIntegrante);
         })
         return nuevoGrupo;
+    }
+
+    static makeEnum(_string){
+        switch (_string) {
+            case "viaje":
+                return TipoGrupo.VIAJE;
+            case "amigos":
+                return TipoGrupo.AMIGOS;
+            case "pareja":
+                return TipoGrupo.PAREJA;
+            default:
+                return TipoGrupo.OTROS;   
+        }
     }
 
     /**
@@ -211,6 +233,10 @@ export default class Grupo {
     */
     getIntegrantes(){
         return this.#integrantes;
+    }
+
+    getTipoGrupo(){
+        return this.#tipoGrupo.description;
     }
 
     /**

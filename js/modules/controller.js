@@ -26,7 +26,7 @@ export default class Controller {
     setCrearGrupoPageEventListener(){
         const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGrupo-item");
         crearGrupoItem.addEventListener("click", () => {
-            
+
             this.#myHTMLhelper.displayNuevoGrupoPage();
             const formElem = this.#myHTMLhelper.getItemHTML("form-crear-grupo");
             formElem.addEventListener("submit", (e) => {
@@ -46,24 +46,32 @@ export default class Controller {
                         new IntegranteGrupo(idIntegrante++,this.#persona));
                     
                     //Agrego otros integrantes
-                    //Corregir Bug cuando viene vacio o con 1 solo integrante adicional
-
-                    formElements.integrantesLista.forEach( (i) => {
-                        console.log(i.value);
-                        nuevoGrupo.agregarIntegrante(
-                            new IntegranteGrupo(idIntegrante++,new Persona(i.value)));
-                    });
+                    if(formElements?.integrantesLista){
+                        if (formElements.integrantesLista instanceof RadioNodeList){
+                            formElements.integrantesLista.forEach( (i) => {
+                            console.log(i.value);
+                            nuevoGrupo.agregarIntegrante(
+                                new IntegranteGrupo(idIntegrante++,new Persona(i.value)));
+                            });
+                        } else{
+                            nuevoGrupo.agregarIntegrante(
+                                new IntegranteGrupo(idIntegrante++,new Persona(formElements.integrantesLista.value)));
+                        };
+                        
+                    }
 
                     // Registro un gasto "random" a cada Integrante
-                    nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[0]);
-                    nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[1]);
-                    nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[2]);
+                    //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[0]);
+                    //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[1]);
+                    //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[2]);
 
                     this.#myGroups.push(nuevoGrupo);
                     this.#myHTMLhelper.displayMensajeExitoso(`El grupo ${formElements.nombre.value} ha sido creado!`);
                     
                     this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
-                }
+                } else {
+                    formElements.nombre.classList.add("is-invalid");
+                };
                    
             });
 
@@ -71,14 +79,18 @@ export default class Controller {
             addIntegranteButton.addEventListener("click", (e) => {
                 
                 const integrante = this.#myHTMLhelper.getItemHTML("text-button-addon1");
-                const itemLista = this.#myHTMLhelper.agregarIntegrante("listaNuevoIntegrante",integrante.value);
-                integrante.value = "";
-                //Evento borrar Integrantee
-                itemLista.childNodes[1].addEventListener("click", (e) => {
-                    console.log(e.target);
-                    this.#myHTMLhelper.borrarIntegrante("listaNuevoIntegrante", e.target.parentNode);
-                });
-
+                if(integrante.value){
+                    integrante.classList = "form-control";
+                    const itemLista = this.#myHTMLhelper.agregarIntegrante("listaNuevoIntegrante",integrante.value);
+                    integrante.value = "";
+                    //Evento borrar Integrantee
+                    itemLista.childNodes[1].addEventListener("click", (e) => {
+                        console.log(e.target);
+                        this.#myHTMLhelper.borrarIntegrante("listaNuevoIntegrante", e.target.parentNode);
+                    });
+                } else {
+                    integrante.classList = "form-control is-invalid";
+                };
             });
 
         });

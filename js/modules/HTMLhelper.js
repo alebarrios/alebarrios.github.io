@@ -274,12 +274,14 @@ export default class HTMLhelper{
         this.#document.getElementById("collapseGrupos").classList = "collapse";
             const main = this.#document.getElementById("main-content");
            main.innerHTML = 
-                `<h1 class="h3 mb-0 text-gray-800">Nuevo Grupo</h1>
+                `<h1 class="h3 mb-2 text-gray-800">Nuevo Grupo</h1>
                 <div class="row">
                 <div class="col-xl-6 col-md-6 mb-4">
                 <form class="form" id="form-crear-grupo">
-                <label class="sr-only" for="nombre">Name</label>
-                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                <div class="form-floating">
+                    <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                    <label for="nombre">Nombre Grupo</label>
+                </div>
                 <div class="radio">
                 
                 <input type="radio" class="btn-check" name="options" id="option1" value="viaje" autocomplete="off" checked />
@@ -299,12 +301,17 @@ export default class HTMLhelper{
                 </div>
                 <div class="input-group mb-3">
                 <button class="btn btn-outline-secondary" type="button" id="button-addon1"><i class="fas fa-fw fa-plus"></i>Integrante</button>
-                <input type="text" class="form-control" placeholder="Nombre integrante"  id="text-button-addon1">
+                <div class="form-floating">
+                    <input type="text" class="form-control" placeholder="Nombre integrante"  id="text-button-addon1">
+                    <label for="text-button-addon1">Nombre Integrante</label>
                 </div>
+                </div>
+                <label class="" for="">Integrantes: </label>
                 <ul class="list-group" id="listaNuevoIntegrante">
                 <li class="list-group-item disabled">Usuario Coder (Yo)</li>
                 </ul>
-                <button type="submit" class="btn btn-primary mb-2">Crear</button>
+                
+                <button type="submit" class="btn btn-primary my-2">Crear</button>
                 </form></div></div>`;
                 
                         

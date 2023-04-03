@@ -122,6 +122,18 @@ export default class Controller {
                     const mensajeSaldos = group.calcularDeudasPendientes();
                     //const mensajeSaldos = "Pendiente...";
                     this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastos, mensajeSaldos});
+
+
+                    const triggerTabList = document.querySelectorAll('.nav-tabs a')
+                        triggerTabList.forEach(triggerEl => {
+                        const tabTrigger = new bootstrap.Tab(triggerEl)
+
+                        triggerEl.addEventListener('click', event => {
+                            event.preventDefault();
+                            console.log(tabTrigger);
+                            tabTrigger.show()
+                        })
+                        })
                     });
             });
 

@@ -356,43 +356,31 @@ export default class HTMLhelper{
     
     displayGrupoPage({info,integrantes,gastos,mensajeSaldos}){
         const main = this.#document.getElementById("main-content");
-        const seccionInfo = `<h1 class="h3 mb-0 text-gray-800">Grupo</h1>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                Informacion
-                </h6>     
-            </div>
+
+        const seccionInfo = `
+        <div class="card shadow m-2">
             <div class="card-body">
                 <p>Id del grupo: ${info.id}</p>
-                <p>Nombre del grupo: ${info.nombre}</p>
+                <p class="text-capitalize">Nombre del grupo: ${info.nombre}</p>
                 <p>Tipo del grupo: ${info.tipoGrupo}</p>
                 <p>Cantidad de integrantes: ${info.cantIntegrantes}</p>
             </div>
-        </div>`;
+        </div>
+        `;
+
         const seccionIntegrantes = `
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                Integrantes
-                </h6>     
-            </div>
+        <div class="card shadow m-2">
             <div class="card-body">
                 <ul class="list-group list-group-flush">` +
                 integrantes.map(element => {
-                    return `<li class="list-group-item">${element}</li>`; 
+                    return `<li class="list-group-item"><i class="fas fa-fw fa-user"></i>${element}</li>`; 
                 }).join("")
             + `</ul>
             </div>
         </div>`;
 
-        const seccionGastos = 
-        `<div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                Gastos
-                </h6>     
-            </div>
+        const seccionGastos = `
+        <div class="card shadow m-2">
             <div class="card-body">
                 <ul class="list-group">` +
                 gastos.map(element => {
@@ -401,20 +389,44 @@ export default class HTMLhelper{
             + `</ul>
             </div>
         </div>`;
+
         const seccionSaldos = 
-        `<div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                Saldos
-                </h6>     
-            </div>
+        `<div class="card shadow m-2">
             <div class="card-body">` +
-                mensajeSaldos.map(mensaje => `<p>${mensaje}</p>`).join("") 
-            + `</div>
+                mensajeSaldos.map(mensaje => `<p>${mensaje}</p>`).join("") + `
+            </div>
         </div>`;
 
+        const grupoPage = `
+        <h1 class="h3 mb-2 text-gray-800 text-capitalize">Grupo ${info.nombre}</h1>
+        <div class="row">
+                    <div class="col-xl-6 col-xxl-2 col-md-6 mb-4">
+        <div class="card shadow mb-4">    
+            <ul class="nav nav-tabs px-1 pt-1">
+                <li class="active"><a class="nav-link font-weight-bold text-primary active" data-toggle="tab" href="#home">General</a></li>
+                <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu1">Integrantes</a></li>
+                <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu2">Gastos</a></li>
+                <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu3">Saldos</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="home" class="tab-pane fade in active show">` +
+                seccionInfo + `
+                </div>
+                <div id="menu1" class="tab-pane fade">` +
+                seccionIntegrantes + `
+                </div>
+                <div id="menu2" class="tab-pane fade">` +
+                seccionGastos + `
+                </div>
+                <div id="menu3" class="tab-pane fade">` +
+                seccionSaldos + `
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>`;
         
-        main.innerHTML = seccionInfo + seccionIntegrantes + seccionGastos + seccionSaldos;
+        main.innerHTML = grupoPage;
 
      return main;
     }

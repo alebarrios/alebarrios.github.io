@@ -272,47 +272,49 @@ export default class HTMLhelper{
 
     displayNuevoGrupoPage(){
         this.#document.getElementById("collapseGrupos").classList = "collapse";
-            const main = this.#document.getElementById("main-content");
+        const main = this.#document.getElementById("main-content");
            main.innerHTML = 
                 `<h1 class="h3 mb-2 text-gray-800">Nuevo Grupo</h1>
                 <div class="row">
-                <div class="col-xl-6 col-md-6 mb-4">
-                <form class="form" id="form-crear-grupo">
-                <div class="form-floating">
-                    <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
-                    <label for="nombre">Nombre Grupo</label>
-                </div>
-                <div class="radio">
-                
-                <input type="radio" class="btn-check" name="options" id="option1" value="viaje" autocomplete="off" checked />
-                <label class="btn btn-outline-primary" for="option1">
-                <i class="fas fa-fw fa-plane"></i>Viaje</label>
-                
-                <input type="radio" class="btn-check" name="options" id="option2" value="amigos" autocomplete="off" />
-                <label class="btn btn-outline-primary" for="option2">
-                <i class="fas fa-fw fa-users"></i>Amigos</label>
+                    <div class="col-xl-6 col-md-6 mb-4">
+                        <form class="form" id="form-crear-grupo">
+                            <div class="form-floating">
+                                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                                <label for="nombre">Nombre Grupo</label>
+                            </div>
+                            <div class="radio">
+                            
+                                <input type="radio" class="btn-check" name="options" id="option1" value="viaje" autocomplete="off" checked />
+                                <label class="btn btn-outline-primary" for="option1">
+                                <i class="fas fa-fw fa-plane"></i>Viaje</label>
+                                
+                                <input type="radio" class="btn-check" name="options" id="option2" value="amigos" autocomplete="off" />
+                                <label class="btn btn-outline-primary" for="option2">
+                                <i class="fas fa-fw fa-users"></i>Amigos</label>
 
-                <input type="radio" class="btn-check" name="options" id="option3" value="pareja" autocomplete="off" />
-                <label class="btn btn-outline-primary" for="option3">
-                <i class="fas fa-fw fa-heart"></i>Pareja</label>
+                                <input type="radio" class="btn-check" name="options" id="option3" value="pareja" autocomplete="off" />
+                                <label class="btn btn-outline-primary" for="option3">
+                                <i class="fas fa-fw fa-heart"></i>Pareja</label>
 
-                <input type="radio" class="btn-check" name="options" id="option4" value="otros" autocomplete="off" />
-                <label class="btn btn-outline-primary" for="option4">Otros</label>
-                </div>
-                <div class="input-group mb-3">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon1"><i class="fas fa-fw fa-plus"></i>Integrante</button>
-                <div class="form-floating">
-                    <input type="text" class="form-control" placeholder="Nombre integrante"  id="text-button-addon1">
-                    <label for="text-button-addon1">Nombre Integrante</label>
-                </div>
-                </div>
-                <label class="" for="">Integrantes: </label>
-                <ul class="list-group" id="listaNuevoIntegrante">
-                <li class="list-group-item disabled">Usuario Coder (Yo)</li>
-                </ul>
-                
-                <button type="submit" class="btn btn-primary my-2">Crear</button>
-                </form></div></div>`;
+                                <input type="radio" class="btn-check" name="options" id="option4" value="otros" autocomplete="off" />
+                                <label class="btn btn-outline-primary" for="option4">Otros</label>
+                            </div>
+                            <div class="input-group mb-3">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon1"><i class="fas fa-fw fa-plus"></i>Integrante</button>
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" placeholder="Nombre integrante"  id="text-button-addon1">
+                                    <label for="text-button-addon1">Nombre Integrante</label>
+                                </div>
+                            </div>
+                            <label class="" for="">Integrantes: </label>
+                            <ul class="list-group" id="listaNuevoIntegrante">
+                            <li class="list-group-item disabled">Usuario Coder (Yo)</li>
+                            </ul>
+                            
+                            <button type="submit" class="btn btn-primary my-2">Crear</button>
+                        </form>
+                    </div>
+                </div>`;
                 
                         
          return main;
@@ -438,7 +440,59 @@ export default class HTMLhelper{
     }
 
     displayNuevoGastoPage(){
+        this.#document.getElementById("collapseGastos").classList = "collapse";
+        const main = this.#document.getElementById("main-content");
+        main.innerHTML = 
+                `<h1 class="h3 mb-2 text-gray-800">Nuevo Gasto</h1>
+                <div class="row">
+                    <div class="col-xl-6 col-xxl-2 col-md-6 mb-4">
+                        <form class="form" id="form-crear-gasto">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                            </div>
+                            <div class="form-floating">
+                                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                                <label for="nombre">Descripcion Gasto</label>
+                            </div>
+                            <label class="" for="">Tipo de Gasto: </label>
+                            <div class="radio">
+                            
+                                <input type="radio" class="btn-check" name="options" id="option1" value="comida" autocomplete="off" checked />
+                                <label class="btn btn-outline-primary" for="option1">
+                                <i class="fas fa-fw fa-utensils"></i>Comida</label>
+                                
+                                <input type="radio" class="btn-check" name="options" id="option2" value="combustible" autocomplete="off" />
+                                <label class="btn btn-outline-primary" for="option2">
+                                <i class="fas fa-fw fa-gas-pump"></i>Combustible</label>
 
+                                <input type="radio" class="btn-check" name="options" id="option3" value="alojamiento" autocomplete="off" />
+                                <label class="btn btn-outline-primary" for="option3">
+                                <i class="fas fa-fw fa-bed"></i>Alojamiento</label>
+
+                                <input type="radio" class="btn-check" name="options" id="option4" value="varios" autocomplete="off" />
+                                <label class="btn btn-outline-primary" for="option4">Varios</label>
+                            </div>
+                            <label class="" for="">Fecha:</label>
+                            <input id="startDate" class="form-control" type="date" />
+                            <select class="form-select my-2" aria-label="Default select example">
+                            <option selected>Seleccione el Grupo</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                            </select>
+                            <select class="form-select my-2" aria-label="Default select example">
+                            <option selected>Seleccione el Integrante</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary my-2">Crear</button>
+                        </form>
+                    </div>
+                </div>`;
+                         
+         return main;
     }
 
     displayMensajeExitoso(mensaje){

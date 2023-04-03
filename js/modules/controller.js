@@ -19,6 +19,7 @@ export default class Controller {
         this.loadStorage();
         this.setCrearGrupoPageEventListener();
         this.setMisGruposPageEventListener();
+        this.setCrearGastoPageEventListener();
         this.setDashboardEventListener();
         this.setBorrarLocalStorageListener();
     }
@@ -125,6 +126,14 @@ export default class Controller {
             });
 
         });  
+    }
+
+    setCrearGastoPageEventListener(){
+        const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGasto-item");
+        crearGrupoItem.addEventListener("click", () => {
+            console.log("setCrearGastoPageEventListener");
+            this.#myHTMLhelper.displayNuevoGastoPage();
+        });
     }
 
     setDashboardEventListener(){

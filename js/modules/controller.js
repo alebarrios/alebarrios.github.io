@@ -24,10 +24,10 @@ export default class Controller {
     }
 
     setCrearGrupoPageEventListener(){
-        const crearGrupoItem = this.#myHTMLhelper.getItemHTML("crear-grupo-item");
+        const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGrupo-item");
         crearGrupoItem.addEventListener("click", () => {
-               
-            const main = this.#myHTMLhelper.displayNuevoGrupoPage();
+            
+            this.#myHTMLhelper.displayNuevoGrupoPage();
             const formElem = this.#myHTMLhelper.getItemHTML("form-crear-grupo");
             formElem.addEventListener("submit", (e) => {
                 e.preventDefault();
@@ -46,6 +46,8 @@ export default class Controller {
                         new IntegranteGrupo(idIntegrante++,this.#persona));
                     
                     //Agrego otros integrantes
+                    //Corregir Bug cuando viene vacio o con 1 solo integrante adicional
+
                     formElements.integrantesLista.forEach( (i) => {
                         console.log(i.value);
                         nuevoGrupo.agregarIntegrante(
@@ -58,10 +60,7 @@ export default class Controller {
                     nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[2]);
 
                     this.#myGroups.push(nuevoGrupo);
-                    main.innerHTML = `<div class="alert alert-success" role="alert">
-                    El grupo ${formElements.nombre.value} ha sido creado!
-                    </div>`;
-
+                    this.#myHTMLhelper.displayMensajeExitoso(`El grupo ${formElements.nombre.value} ha sido creado!`);
                     
                     this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
                 }
@@ -70,17 +69,24 @@ export default class Controller {
 
             const addIntegranteButton = this.#myHTMLhelper.getItemHTML("button-addon1");
             addIntegranteButton.addEventListener("click", (e) => {
-                console.log(e.target);
+                
                 const integrante = this.#myHTMLhelper.getItemHTML("text-button-addon1");
-                this.#myHTMLhelper.agregarIntegrante("listaNuevoIntegrante",integrante.value);
+                const itemLista = this.#myHTMLhelper.agregarIntegrante("listaNuevoIntegrante",integrante.value);
                 integrante.value = "";
+                //Evento borrar Integrantee
+                itemLista.childNodes[1].addEventListener("click", (e) => {
+                    console.log(e.target);
+                    this.#myHTMLhelper.borrarIntegrante("listaNuevoIntegrante", e.target.parentNode);
+                });
+
             });
+
         });
         
     }
 
     setMisGruposPageEventListener(){
-        const misGruposItem = this.#myHTMLhelper.getItemHTML("mis-grupos-item");
+        const misGruposItem = this.#myHTMLhelper.getItemHTML("MisGrupos-item");
         misGruposItem.addEventListener("click", () => {
             const grupoArrObj = this.#myGroups.map( (group) => {
                 return {id: group.getId(), 

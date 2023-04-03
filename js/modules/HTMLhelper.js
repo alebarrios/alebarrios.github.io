@@ -74,45 +74,9 @@ export default class HTMLhelper{
         this.#AgregarElementoHTML({_tipo: "hr",_clases: "sidebar-divider",_padre: sideBarElement});        
             
         this.#AgregarElementoHTML({_clases: "sidebar-heading",_padre: sideBarElement}).innerHTML = `Menu`;
-        
-        //Seccion Grupos Sidebar
-        const grupoSidebar = this.#AgregarElementoHTML({_tipo: "li",_clases: "nav-item",_padre: sideBarElement});
-        
-        const aGrupos = this.#AgregarElementoHTML({
-            _tipo: "a",
-            _clases: "nav-link collapsed",
-            _href: "#",
-            _padre: grupoSidebar});
-        aGrupos.innerHTML = `<i class="fas fa-fw fa-folder"></i><span>Grupos</span>`;
-        aGrupos.setAttribute('data-toggle','collapse');
-        aGrupos.setAttribute('data-target','#collapsePages');
-        aGrupos.setAttribute('aria-expanded','true');
-        aGrupos.setAttribute('aria-controls','collapsePages');
 
-        const collapseGrupos = this.#AgregarElementoHTML({
-            _clases: "collapse",
-            _id: "collapsePages",
-            _href: "#",
-            _padre: grupoSidebar});
-        collapseGrupos.setAttribute('aria-labelledby','headingPages');
-        collapseGrupos.setAttribute('data-parent','#accordionSidebar');
-
-        const collapseGruposInnerElement = this.#AgregarElementoHTML({
-            _clases: "bg-white py-2 collapse-inner rounded",
-            _padre: collapseGrupos});
-
-        const crearGrupoElement = this.#AgregarElementoHTML({
-            _id: "crear-grupo-item",
-            _clases: "collapse-item",
-            _padre: collapseGruposInnerElement});
-        crearGrupoElement.innerHTML = "Crear Grupo";
-
-        const misGrupoElement = this.#AgregarElementoHTML({
-            _id: "mis-grupos-item",
-            _clases: "collapse-item",
-            _padre: collapseGruposInnerElement});
-        misGrupoElement.innerHTML = "Mis Grupos";
-
+        this.#crearSeccionSidebar("Grupos",["Crear Grupo", "Mis Grupos"],"users", sideBarElement);
+        this.#crearSeccionSidebar("Gastos",["Crear Gasto", "Mis Gastos"],"dollar-sign", sideBarElement);
 
         //Divider
         this.#AgregarElementoHTML({_tipo: "hr",_clases: "sidebar-divider d-none d-md-block",_padre: sideBarElement});
@@ -239,6 +203,46 @@ export default class HTMLhelper{
         return navElement;
     }
 
+
+    #crearSeccionSidebar(titulo,items,nombreIcono,padre){
+        const sidebar = this.#AgregarElementoHTML({_tipo: "li",_clases: "nav-item",_padre: padre});
+        
+        const aSidebar = this.#AgregarElementoHTML({
+            _tipo: "a",
+            _clases: "nav-link collapsed",
+            _href: "#",
+            _padre: sidebar});
+        aSidebar.innerHTML = `<i class="fas fa-fw fa-${nombreIcono}"></i><span>${titulo}</span>`;
+        titulo.replace(/ /g,'')
+        aSidebar.setAttribute('data-toggle','collapse');
+        aSidebar.setAttribute('data-target',`#collapse${titulo}`);
+        aSidebar.setAttribute('aria-expanded','true');
+        aSidebar.setAttribute('aria-controls',`#collapse${titulo}`);
+
+        const collapseSidebar = this.#AgregarElementoHTML({
+            _clases: "collapse",
+            _id: `collapse${titulo}`,
+            _href: "#",
+            _padre: sidebar});
+        collapseSidebar.setAttribute('aria-labelledby',`heading${titulo}`);
+        collapseSidebar.setAttribute('data-parent','#accordionSidebar');
+
+        const collapseGruposInnerElement = this.#AgregarElementoHTML({
+            _clases: "bg-white py-2 collapse-inner rounded",
+            _padre: collapseSidebar});
+
+
+        items.forEach(item => {
+            const itemOriginal = item;
+            const crearGrupoElement = this.#AgregarElementoHTML({
+                _id: `${item.replace(/ /g,'')}-item`,
+                _clases: "collapse-item",
+                _padre: collapseGruposInnerElement});
+            crearGrupoElement.innerHTML = itemOriginal;
+        });
+
+    }
+
     #AgregarElementoHTML({_tipo,_id,_type,_name,_clases,_href,_padre}) {
         const element = this.#document.createElement(_tipo || "div");
         _id && (element.id = _id);
@@ -267,7 +271,7 @@ export default class HTMLhelper{
     }
 
     displayNuevoGrupoPage(){
-        this.#document.getElementById("collapsePages").classList = "collapse";
+        this.#document.getElementById("collapseGrupos").classList = "collapse";
             const main = this.#document.getElementById("main-content");
            main.innerHTML = 
                 `<h1 class="h3 mb-0 text-gray-800">Nuevo Grupo</h1>
@@ -308,7 +312,7 @@ export default class HTMLhelper{
     }
 
     displayMisGruposPage(_arrayGrupos){
-        this.#document.getElementById("collapsePages").classList = "collapse";
+        this.#document.getElementById("collapseGrupos").classList = "collapse";
         const main = this.#document.getElementById("main-content");
         
         let cardArray = [];
@@ -400,13 +404,14 @@ export default class HTMLhelper{
             + `</div>
         </div>`;
 
+        
         main.innerHTML = seccionInfo + seccionIntegrantes + seccionGastos + seccionSaldos;
 
      return main;
     }
 
     displayDashboardPage(){
-        this.#document.getElementById("collapsePages").classList = "collapse";
+        this.#document.getElementById("collapseGrupos").classList = "collapse";
         const main = this.#document.getElementById("main-content");
            main.innerHTML = 
            `<div class="card shadow mb-4">
@@ -425,6 +430,17 @@ export default class HTMLhelper{
          return main;
     }
 
+    displayNuevoGastoPage(){
+
+    }
+
+    displayMensajeExitoso(mensaje){
+        const main = this.#document.getElementById("main-content");
+        main.innerHTML = `<div class="alert alert-success" role="alert">
+        ${mensaje}
+        </div>`
+    }
+
     agregarIntegrante(id,nombre){
         const lista = this.#document.getElementById(id);
 
@@ -432,7 +448,13 @@ export default class HTMLhelper{
             _tipo: "li",
             _clases: "list-group-item",
             _padre: lista});
-        item.innerHTML = `${nombre} <i class="fas fa-fw fa-trash"></i>`;
+        //item.innerHTML = `${nombre} <i class="fas fa-fw fa-trash"></i>`;
+
+        const borrar = this.#AgregarElementoHTML({
+            _tipo: "i",
+            _clases: "fas fa-fw fa-trash",
+            _padre: item});
+        item.insertBefore(this.#document.createTextNode(nombre), borrar);
 
         const itemHidden = this.#AgregarElementoHTML({
             _tipo: "input",
@@ -441,6 +463,13 @@ export default class HTMLhelper{
             _id: id,
             _padre: lista});
         itemHidden.value = nombre;
+
+        return item;
+    }
+
+    borrarIntegrante(id,item){
+        const lista = this.#document.getElementById(id);
+        lista.removeChild(item);
     }
 
 }

@@ -1,0 +1,67 @@
+{
+    "userGroups": [
+        {
+            "idGrupo": 1,
+            "nombreGrupo": "Grupete",
+            "tipoGrupo": "amigos",
+            "integrantes": [
+                {
+                    "idIntegrante": 1,
+                    "personaIntegrante": {
+                        "nombrePersona": "Usuario Coder"
+                    },
+                    "gastosIntegrante": []
+                },
+                {
+                    "idIntegrante": 2,
+                    "personaIntegrante": {
+                        "nombrePersona": "Juan"
+                    },
+                    "gastosIntegrante": []
+                },
+                {
+                    "idIntegrante": 3,
+                    "personaIntegrante": {
+                        "nombrePersona": "Pedro"
+                    },
+                    "gastosIntegrante": []
+                }
+            ]
+        },
+        {
+            "idGrupo": 2,
+            "nombreGrupo": "Amigueros",
+            "tipoGrupo": "otros",
+            "integrantes": [
+                {
+                    "idIntegrante": 1,
+                    "personaIntegrante": {
+                        "nombrePersona": "Usuario Coder"
+                    },
+                    "gastosIntegrante": []
+                },
+                {
+                    "idIntegrante": 2,
+                    "personaIntegrante": {
+                        "nombrePersona": "María"
+                    },
+                    "gastosIntegrante": []
+                },
+                {
+                    "idIntegrante": 3,
+                    "personaIntegrante": {
+                        "nombrePersona": "Mariela"
+                    },
+                    "gastosIntegrante": []
+                },
+                {
+                    "idIntegrante": 4,
+                    "personaIntegrante": {
+                        "nombrePersona": "Damián"
+                    },
+                    "gastosIntegrante": []
+                }
+            ]
+        }
+    ]
+}

@@ -227,9 +227,20 @@ export default class Controller {
 
 
     loadStorage(){
-        const gruposObjArr = this.#storageHelper.obtener();
+     /*    const gruposObjArr = this.#storageHelper.obtener();
         gruposObjArr?.forEach((gruposObj) => {
             this.#myGroups.push(Grupo.from(gruposObj));
-        });
+        }); */
+
+        fetch("../../grupos.json")
+        .then(resp => resp.json())
+        .then(data => {
+            console.log(data);
+            data.userGroups.forEach((gruposObj) => {
+                this.#myGroups.push(Grupo.from(gruposObj));
+            });
+        })
+        .catch(err => console.log("Error leyendo json:" + err))
+
     }
 }

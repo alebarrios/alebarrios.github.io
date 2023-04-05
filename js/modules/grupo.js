@@ -27,11 +27,11 @@ export default class Grupo {
         this.#tipoGrupo = _tipoGrupo;
     }
 
-    static from({idGrupo, nombreGrupo, integrantes}) {
-        const nuevoGrupo = new Grupo(idGrupo, nombreGrupo);
+    static from({idGrupo, nombreGrupo, tipoGrupo, integrantes}) {
+        const nuevoGrupo = new Grupo(idGrupo, nombreGrupo, this.makeEnum(tipoGrupo));
         integrantes.forEach((integrante) => {
             const nuevoIntegrante = IntegranteGrupo.from(integrante);
-            nuevoGrupo.agregarIntegrante(nuevoIntegrante);
+            nuevoGrupo.agregarIntegrante(nuevoIntegrante.getId(), nuevoIntegrante.getPersona());
         })
         return nuevoGrupo;
     }
@@ -51,40 +51,49 @@ export default class Grupo {
 
     /**
      * Agrega un nuevo Integrante al grupo. Se recalculan los saldos de todos los integrantes.
-     * @param {IntegranteGrupo} _integrante - el nuevo integrante a agregar.
+     * @param {Persona} persona - el nuevo integrante a agregar.
+     * 
      */
-    agregarIntegrante(_integrante){
+    agregarIntegrante(id,persona){
 
-        if(this.#saldos.has(_integrante.getId())) {
+        if(this.#saldos.has(id)) {
             console.log("Integrante ya existe en el grupo");
             return;
         };
-
-        this.#saldos.set(_integrante.getId(),0);
-        this.#integrantes.push(_integrante);
-
-      this.#recalcularSaldos();
+        
+        const integrante = new IntegranteGrupo(id,persona);
+        this.#saldos.set(id,0);
+        this.#integrantes.push(integrante);
+        this.#recalcularSaldos();
     }
 
     /**
      * Registra un nuevo gasto al grupo. Se recalculan los saldos de todos los integrantes.
-     * @param {Gasto} _gasto - el nuevo gasto a registrar.
-     * @param {IntegranteGrupo} _integrante - el integrante que registra el gasto.
+     * @param {Gasto} gasto - el nuevo gasto a registrar.
      */
-    registrarNuevoGasto(_gasto,_integrante){
+    registrarNuevoGasto(gasto){
         //console.log("registrando gasto");
-        if(!this.#saldos.has(_integrante.getId())){
+        
+        const integrante = this.#integrantes.find(integrante => gasto.getIdIntegrante() == integrante.getId());
+        if(!integrante){
             console.log("Integrante no existe.");
+            return;  
+        }
+
+        console.log(this.#saldos);
+        
+        if(!this.#saldos.has(gasto.getIdIntegrante())){
+            console.log("Integrante no existe en lista de saldos.");
             return;
         };
 
-        if(_gasto.getImporte() <= 0){ 
-            console.log("El importe no puede ser negativo");
+        if(gasto.getImporte() <= 0){ 
+            console.log("El importe no puede ser 0 o negativo");
             return; 
         };
 
-        _integrante.agregarGasto(_gasto);
-        this.#saldos.set(_integrante.getId(), this.#saldos.get(_integrante.getId()) + _gasto.getImporte());
+        integrante.agregarGasto(gasto);
+        this.#saldos.set(gasto.getIdIntegrante(), this.#saldos.get(gasto.getIdIntegrante()) + gasto.getImporte());
         
         this.#recalcularSaldos();
     }
@@ -189,17 +198,17 @@ export default class Grupo {
     }
 
     /**
-     * Obtiene un array de objectos con los Gastos de todos los Integrantes del Grupo.
+     * Obtiene un array con los Gastos de todos los Integrantes del Grupo.
      * @return {array} con todos los Gastos.
      */
         getGastos(){
-            const gastos = [];
+            const arrayGastos = [];
             this.#integrantes.forEach((integrante) => {
                 integrante.getGastos().forEach( (gasto) => {
-                    gastos.push({importe: gasto.getImporte(), nombreIntegrante: integrante.getPersona().getNombre()}); 
+                    arrayGastos.push(gasto); 
                 });
             });
-            return gastos;
+            return arrayGastos;
         }
 
     /**
@@ -247,6 +256,7 @@ export default class Grupo {
         const obj = {
             idGrupo: this.#id,
             nombreGrupo: this.#nombre,
+            tipoGrupo: this.#tipoGrupo.description,
             integrantes: this.#integrantes.map((item) => JSON.parse(item.getJSON()))
         };
         return JSON.stringify(obj);

@@ -354,7 +354,7 @@ export default class HTMLhelper{
         return main;
     }
     
-    displayGrupoPage({info,integrantes,gastos,mensajeSaldos}){
+    displayGrupoPage({info,integrantes,gastosArr,mensajeSaldos}){
         const main = this.#document.getElementById("main-content");
 
         const seccionInfo = `
@@ -383,7 +383,7 @@ export default class HTMLhelper{
         <div class="card shadow m-2">
             <div class="card-body">
                 <ul class="list-group">` +
-                gastos.map(element => {
+                gastosArr.map(element => {
                     return `<li class="list-group-item disabled">Importe: $${element.importe.toFixed(2)} - Integrante: ${element.nombreIntegrante}</li>`; 
                 }).join("")
             + `</ul>
@@ -461,36 +461,36 @@ export default class HTMLhelper{
                         <form class="form" id="form-crear-gasto">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">$</span>
-                                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                                <input type="text" class="form-control" name="importe">
                             </div>
                             <div class="form-floating">
-                                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
-                                <label for="nombre">Descripcion Gasto</label>
+                                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" name="descripcion">
+                                <label for="nombre">Descripción del gasto</label>
                             </div>
-                            <label class="" for="">Tipo de Gasto: </label>
-                            <div class="radio">
+                            <label for="radio-gasto">Tipo de Gasto: </label>
+                            <div class="radio" id="radio-gasto">
                             
-                                <input type="radio" class="btn-check" name="options" id="option1" value="comida" autocomplete="off" checked />
+                                <input type="radio" class="btn-check" name="tipoGasto" id="option1" value="comida" autocomplete="off" checked />
                                 <label class="btn btn-outline-primary" for="option1">
                                 <i class="fas fa-fw fa-utensils"></i>Comida</label>
-                                
-                                <input type="radio" class="btn-check" name="options" id="option2" value="combustible" autocomplete="off" />
+                            
+                                <input type="radio" class="btn-check" name="tipoGasto" id="option2" value="combustible" autocomplete="off" />
                                 <label class="btn btn-outline-primary" for="option2">
                                 <i class="fas fa-fw fa-gas-pump"></i>Combustible</label>
 
-                                <input type="radio" class="btn-check" name="options" id="option3" value="alojamiento" autocomplete="off" />
+                                <input type="radio" class="btn-check" name="tipoGasto" id="option3" value="alojamiento" autocomplete="off" />
                                 <label class="btn btn-outline-primary" for="option3">
                                 <i class="fas fa-fw fa-bed"></i>Alojamiento</label>
 
-                                <input type="radio" class="btn-check" name="options" id="option4" value="varios" autocomplete="off" />
+                                <input type="radio" class="btn-check" name="tipoGasto" id="option4" value="varios" autocomplete="off" />
                                 <label class="btn btn-outline-primary" for="option4">Varios</label>
                             </div>
                             <div class="form-floating">
-                                <input type="date" id="fecha-gasto" class="form-control"  />
+                                <input type="date" id="fecha-gasto" class="form-control" name="fechaGasto" />
                                 <label for="fecha-gasto">Fecha de gasto</label>
                             </div>
                             <div class="form-floating">
-                                <select class="form-select my-2" id="form-select-grupo">
+                                <select class="form-select my-2" id="form-select-grupo" name="selectGrupo">
                                 ` +
                                 grupos.map(elem => `<option value="${elem.id}">${elem.nombre}</option>`).join("") + `
                                 </select>
@@ -555,7 +555,7 @@ export default class HTMLhelper{
         const select = this.#document.getElementById("select-integrante");
         select.innerHTML =
         `<div class="form-floating">
-            <select class="form-select my-2" id="form-select-integrante">
+            <select class="form-select my-2" id="form-select-integrante" name="selectIntegrante">
             ` +
             opciones.map(opcion => `<option value="${opcion.id}">${opcion.nombre}</option>`).join("") + `
             </select>

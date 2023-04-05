@@ -16,8 +16,6 @@ export default class IntegranteGrupo {
         this.#persona = _persona;
         this.#gastos = [];
         this.#id = _id;
-        //this.#grupo = _grupo;
-        //this.#grupo.agregarIntegrante(this);
     }
 
     static from({idIntegrante, personaIntegrante, gastosIntegrante}) {

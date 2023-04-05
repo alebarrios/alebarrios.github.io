@@ -38,33 +38,28 @@ export default class Controller {
                 if (formElements.nombre.value) {
                     
                     console.log(formElements);
-                    const nuevoGrupo = 
-                        new Grupo(idgrupo,formElements.nombre.value, Grupo.makeEnum(formElements.options.value));
+                    const nombreGrupo = formElements.nombre.value;
+                    const tipoGrupo = formElements.options.value;
+                    const nuevoGrupo = new Grupo(idgrupo,nombreGrupo, Grupo.makeEnum(tipoGrupo));
                         
-                    let idIntegrante = nuevoGrupo.getIntegrantes().length;
+                    const arrIntegrantes = nuevoGrupo.getIntegrantes();
+                    let idIntegrante = arrIntegrantes[arrIntegrantes.length - 1]?.getId() || 0;
                     //Agrego al usuario principal al grupo
-                    nuevoGrupo.agregarIntegrante(
-                        new IntegranteGrupo(idIntegrante++,this.#persona));
+                    nuevoGrupo.agregarIntegrante(++idIntegrante,this.#persona);
                     
                     //Agrego otros integrantes
                     if(formElements?.integrantesLista){
-                        if (formElements.integrantesLista instanceof RadioNodeList){
-                            formElements.integrantesLista.forEach( (i) => {
+                        const integrantes = formElements.integrantesLista;
+                        if (integrantes instanceof RadioNodeList){
+                            integrantes.forEach( (i) => {
                             console.log(i.value);
-                            nuevoGrupo.agregarIntegrante(
-                                new IntegranteGrupo(idIntegrante++,new Persona(i.value)));
+                            nuevoGrupo.agregarIntegrante(++idIntegrante,new Persona(i.value));
                             });
                         } else{
-                            nuevoGrupo.agregarIntegrante(
-                                new IntegranteGrupo(idIntegrante++,new Persona(formElements.integrantesLista.value)));
+                            nuevoGrupo.agregarIntegrante(++idIntegrante,new Persona(integrantes.value));
                         };
                         
                     }
-
-                    // Registro un gasto "random" a cada Integrante
-                    //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[0]);
-                    //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[1]);
-                    //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[2]);
 
                     this.#myGroups.push(nuevoGrupo);
                     this.#myHTMLhelper.displayMensajeExitoso(`El grupo ${formElements.nombre.value} ha sido creado!`);
@@ -118,10 +113,18 @@ export default class Controller {
                         tipoGrupo: group.getTipoGrupo() };
                     
                     const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
+                    //RESOLVER BUG
                     const gastos = group.getGastos();
+                    const gastosArr = gastos.map(gasto => {
+                        return {
+                            importe: gasto.getImporte(),
+                            descripcion: gasto.getDescripcion,
+                            fecha: gasto.getFecha(),
+                            integrante: "RANDOM"
+                        }
+                    });
                     const mensajeSaldos = group.calcularDeudasPendientes();
-                    //const mensajeSaldos = "Pendiente...";
-                    this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastos, mensajeSaldos});
+                    this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastosArr, mensajeSaldos});
 
 
                     const triggerTabList = document.querySelectorAll('.nav-tabs a')
@@ -130,7 +133,6 @@ export default class Controller {
 
                         triggerEl.addEventListener('click', event => {
                             event.preventDefault();
-                            console.log(tabTrigger);
                             tabTrigger.show()
                         })
                         })
@@ -146,11 +148,20 @@ export default class Controller {
             console.log("setCrearGastoPageEventListener");
 
             if(this.#myGroups.length > 0){
-                this.#myHTMLhelper.displayNuevoGastoPage(this.#myGroups.map(grupo => {
-                     return { id: grupo.getId(), nombre: grupo.getNombre() }}));
+                
+                const arrGrupos = this.#myGroups.map(grupo => {
+                    return { id: grupo.getId(), nombre: grupo.getNombre() }});
+                this.#myHTMLhelper.displayNuevoGastoPage(arrGrupos);
+                if (arrGrupos.length == 1){
+                    this.#myHTMLhelper.crearSelectIntegrante(this.#myGroups[0].getIntegrantes().map(int => {
+                        return { id: int.getId(), nombre: int.getPersona().getNombre() }})
+                    );
+                } 
+            
+
                 const selectElem = this.#myHTMLhelper.getItemHTML("form-select-grupo");
                 selectElem.addEventListener("change", e => {
-                    
+                    console.log("bla bla");
                     const integrantes = this.#myGroups.find(grupo => e.target.value == grupo.getId()).getIntegrantes();
                     this.#myHTMLhelper.crearSelectIntegrante(integrantes.map(int => {
                         return { id: int.getId(), nombre: int.getPersona().getNombre() }})
@@ -163,20 +174,31 @@ export default class Controller {
                     console.log(e.target.elements);
                     const formElements = e.target.elements;
                     if (formElements.nombre.value) {
-                        
-                        console.log(formElements);
-                        const nuevoGrupo = 
-                            new Grupo(idgrupo,formElements.nombre.value, Grupo.makeEnum(formElements.options.value));
-    
+                        //validar
+                        const idGrupo = formElements.selectGrupo.value;
+                        const idIntegrante = parseInt(formElements.selectIntegrante.value);
+                        const importe = formElements.importe.value;
+                        const descripcion = formElements.descripcion.value;
+                        const fecha = formElements.fechaGasto.value;
+                        const tipoGasto = formElements.tipoGasto.value;
+                        const grupo = this.#myGroups.find(grupo => idGrupo == grupo.getId());
+                        const gastos = grupo.getGastos();
 
-                        // Registro un gasto "random" a cada Integrante
-                        //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[0]);
-                        //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[1]);
-                        //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[2]);
+                        //REVALIDAR
+                        const idGasto = gastos[gastos.length - 1]?.getId() || 1;
 
-                        
+                        const gasto = new Gasto({
+                            id: idGasto,
+                            importe,
+                            descripcion,
+                            fecha,
+                            tipoGasto,
+                            idIntegrante
+                        });
+
+                        grupo.registrarNuevoGasto(gasto);
+             
                         this.#myHTMLhelper.displayMensajeExitoso(`El gasto ${formElements.nombre.value} ha sido agregado!`);
-                        
                         this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
                     } else {
                         formElements.nombre.classList.add("is-invalid");

@@ -451,7 +451,7 @@ export default class HTMLhelper{
          return main;
     }
 
-    displayNuevoGastoPage(){
+    displayNuevoGastoPage(grupos){
         this.#document.getElementById("collapseGastos").classList = "collapse";
         const main = this.#document.getElementById("main-content");
         main.innerHTML = 
@@ -485,20 +485,19 @@ export default class HTMLhelper{
                                 <input type="radio" class="btn-check" name="options" id="option4" value="varios" autocomplete="off" />
                                 <label class="btn btn-outline-primary" for="option4">Varios</label>
                             </div>
-                            <label class="" for="">Fecha:</label>
-                            <input id="startDate" class="form-control" type="date" />
-                            <select class="form-select my-2" aria-label="Default select example">
-                            <option selected>Seleccione el Grupo</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                            </select>
-                            <select class="form-select my-2" aria-label="Default select example">
-                            <option selected>Seleccione el Integrante</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                            </select>
+                            <div class="form-floating">
+                                <input type="date" id="fecha-gasto" class="form-control"  />
+                                <label for="fecha-gasto">Fecha de gasto</label>
+                            </div>
+                            <div class="form-floating">
+                                <select class="form-select my-2" id="form-select-grupo">
+                                ` +
+                                grupos.map(elem => `<option value="${elem.id}">${elem.nombre}</option>`).join("") + `
+                                </select>
+                                <label for="form-select-grupo">Elija el grupo</label>
+                            </div>
+                            <div id="select-integrante">
+                            </div>
                             <button type="submit" class="btn btn-primary my-2">Crear</button>
                         </form>
                     </div>
@@ -510,6 +509,13 @@ export default class HTMLhelper{
     displayMensajeExitoso(mensaje){
         const main = this.#document.getElementById("main-content");
         main.innerHTML = `<div class="alert alert-success" role="alert">
+        ${mensaje}
+        </div>`
+    }
+
+    displayMensajeConError(mensaje){
+        const main = this.#document.getElementById("main-content");
+        main.innerHTML = `<div class="alert alert-info" role="info">
         ${mensaje}
         </div>`
     }
@@ -543,6 +549,20 @@ export default class HTMLhelper{
     borrarIntegrante(id,item){
         const lista = this.#document.getElementById(id);
         lista.removeChild(item);
+    }
+
+    crearSelectIntegrante(opciones){
+        const select = this.#document.getElementById("select-integrante");
+        select.innerHTML =
+        `<div class="form-floating">
+            <select class="form-select my-2" id="form-select-integrante">
+            ` +
+            opciones.map(opcion => `<option value="${opcion.id}">${opcion.nombre}</option>`).join("") + `
+            </select>
+            <label for="form-select-grupo">Elija a nombre de quién</label>
+        </div>
+        `
+        return select;
     }
 
 }

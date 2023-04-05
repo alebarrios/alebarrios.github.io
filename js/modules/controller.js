@@ -28,7 +28,7 @@ export default class Controller {
         const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGrupo-item");
         crearGrupoItem.addEventListener("click", () => {
 
-            this.#myHTMLhelper.displayNuevoGrupoPage();
+        this.#myHTMLhelper.displayNuevoGrupoPage();
             const formElem = this.#myHTMLhelper.getItemHTML("form-crear-grupo");
             formElem.addEventListener("submit", (e) => {
                 e.preventDefault();
@@ -36,7 +36,7 @@ export default class Controller {
                  
                 const formElements = e.target.elements;
                 if (formElements.nombre.value) {
-                    //let tipoGrupo = Grupo.makeEnum(formElements.);
+                    
                     console.log(formElements);
                     const nuevoGrupo = 
                         new Grupo(idgrupo,formElements.nombre.value, Grupo.makeEnum(formElements.options.value));
@@ -144,7 +144,46 @@ export default class Controller {
         const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGasto-item");
         crearGrupoItem.addEventListener("click", () => {
             console.log("setCrearGastoPageEventListener");
-            this.#myHTMLhelper.displayNuevoGastoPage();
+
+            if(this.#myGroups.length > 0){
+                this.#myHTMLhelper.displayNuevoGastoPage(this.#myGroups.map(grupo => {
+                     return { id: grupo.getId(), nombre: grupo.getNombre() }}));
+                const selectElem = this.#myHTMLhelper.getItemHTML("form-select-grupo");
+                selectElem.addEventListener("change", e => {
+                    
+                    const integrantes = this.#myGroups.find(grupo => e.target.value == grupo.getId()).getIntegrantes();
+                    this.#myHTMLhelper.crearSelectIntegrante(integrantes.map(int => {
+                        return { id: int.getId(), nombre: int.getPersona().getNombre() }})
+                    );
+                });
+
+                const formElem = this.#myHTMLhelper.getItemHTML("form-crear-gasto");
+                formElem.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    console.log(e.target.elements);
+                    const formElements = e.target.elements;
+                    if (formElements.nombre.value) {
+                        
+                        console.log(formElements);
+                        const nuevoGrupo = 
+                            new Grupo(idgrupo,formElements.nombre.value, Grupo.makeEnum(formElements.options.value));
+    
+
+                        // Registro un gasto "random" a cada Integrante
+                        //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[0]);
+                        //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[1]);
+                        //nuevoGrupo.registrarNuevoGasto(new Gasto(Math.random() * 100, TipoGasto.VARIOS), nuevoGrupo.getIntegrantes()[2]);
+
+                        
+                        this.#myHTMLhelper.displayMensajeExitoso(`El gasto ${formElements.nombre.value} ha sido agregado!`);
+                        
+                        this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
+                    } else {
+                        formElements.nombre.classList.add("is-invalid");
+                    };
+                    
+                });
+            }
         });
     }
 

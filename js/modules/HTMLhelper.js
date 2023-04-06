@@ -41,7 +41,7 @@ export default class HTMLhelper{
             _clases: "container-fluid",
             _padre: contentElement}); 
 
-        this.displayDashboardPage();
+        //this.displayDashboardPage();
             
     }
 
@@ -465,23 +465,65 @@ export default class HTMLhelper{
      return main;
     }
 
-    displayDashboardPage(){
+    displayDashboardPage(info){  
         this.#document.getElementById("collapseGrupos").classList = "collapse";
         const main = this.#document.getElementById("main-content");
-           main.innerHTML = 
-           `<div class="card shadow mb-4">
-           <div class="card-header py-3">
-               <h6 class="m-0 font-weight-bold text-primary">Divisor de Gastos - 3ra Pre-Entrega</h6>
-           </div>
-           <div class="card-body">
-               <p>En esta pre-entrega se integra el DOM y el uso de JSON + localStorage. Se permiten las siguientes funcionalidades:</p>
-               <p class="mb-0">* Crear Grupos</p>
-               <p class="mb-0">* Ver los Grupos creados</p>
-               <p class="mb-0">* Ver la información de cada grupo</p>
-               <p class="mb-0">* Guardar los grupos en LocalStorage</p>
-               <p class="mb-0">* Borrar la LocalStorage(desde el avatar de usuario)</p>
-           </div>
-       </div>`;
+           main.innerHTML = `
+           <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
+            <div class="row">
+               
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Total Gastado (Usuario)</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$${info.totalGastado}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            Grupos (Usuario)</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${info.cantGrupos}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Saldo Total (Usuario)</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$${info.saldoTotal}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comments-dollar fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            `;
          return main;
     }
 

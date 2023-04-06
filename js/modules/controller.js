@@ -21,6 +21,7 @@ export default class Controller {
         this.setCrearGastoPageEventListener();
         this.setDashboardEventListener();
         this.setBorrarLocalStorageListener();
+
     }
 
     setCrearGrupoPageEventListener(){
@@ -247,7 +248,7 @@ export default class Controller {
     setDashboardEventListener(){
         const dashboardItem = this.#myHTMLhelper.getItemHTML("dashboard-item");
         dashboardItem.addEventListener("click", () => {
-            this.#myHTMLhelper.displayDashboardPage();
+            this.#myHTMLhelper.displayDashboardPage(this.getInfoUsuario());
         });  
     }
 
@@ -263,7 +264,26 @@ export default class Controller {
         this.#myGroups.splice(this.#myGroups.findIndex(elem => elem.getId() == idGrupo),1);
     }
 
+    getInfoUsuario(){
+        const cantGrupos = this.#myGroups.reduce((acum, grupo) => {
+            return grupo.getIntegrantes().find(integrante => integrante.getId() == 1) && ++acum;
+        },0);
 
+        const totalGastado = this.#myGroups.reduce((acum, grupo) => {
+            return acum + grupo.getGastoDeIntegrante(1);
+        },0);
+
+        const saldoTotal = this.#myGroups.reduce((acum, grupo) => {
+            return acum + grupo.getSaldo(1);
+        },0).toFixed(2);
+
+        const info = {
+            totalGastado,
+            cantGrupos,
+            saldoTotal
+        };
+        return info;
+    }
 
     loadStorage(){
      /*    const gruposObjArr = this.#storageHelper.obtener();
@@ -279,6 +299,7 @@ export default class Controller {
                 
                 this.#myGroups.push(Grupo.from(gruposObj));
             });
+            this.#myHTMLhelper.displayDashboardPage(this.getInfoUsuario());
         })
         .catch(err => console.log("Error leyendo json:" + err))
 

@@ -240,6 +240,16 @@ export default class Grupo {
     }
 
     /**
+     * Devuelve la sumatoria de todos los gastos de un integrante en particular.
+     * @return {number} el importe total.
+     */
+    getGastoDeIntegrante(idIntegrante){
+        console.log(`Revisando gastos de ${idIntegrante} en Grupo ${this.#id}`);
+        const integrante = this.#integrantes.find( integrante => integrante.getId() == idIntegrante);
+        return integrante.getGastoTotal() || 0;
+    }
+
+    /**
      * Obtiene el nombre del grupo.
      * @return {string} el nombre.
      */
@@ -262,11 +272,11 @@ export default class Grupo {
 
     /**
      * Obtiene el saldo de un Intengrante en particular.
-     * @param {Integrante} _integrante - el integrante.
+     * @param {number} idIntegrante - el integrante.
      * @return {string} el saldo del integrante.
      */
-    getSaldo(_integrante){
-        return parseFloat(this.#saldos.get(_integrante.getId()));
+    getSaldo(idIntegrante){
+        return parseFloat(this.#saldos.get(idIntegrante));
     }
 
     /**

@@ -20,17 +20,18 @@ export default class Gasto {
      * @param {{id: number, importe: string, descripcion: string, fecha: string, tipoGasto}} 
      * objeto de inicializacion de Gasto
      */
-    constructor({id,importe,descripcion,fecha,tipoGasto,idIntegrante}){
-        this.#id = id;
-        this.#importe = parseFloat(importe);
-        this.#descripcion = descripcion;
-        this.#fecha = new Date(fecha);
+    constructor({idGasto,importeGasto,descripcionGasto,fechaGasto,tipoGasto,idIntegrante}){
+        //Resolverbug
+        this.#id = idGasto;
+        this.#importe = parseFloat(importeGasto);
+        this.#descripcion = descripcionGasto;
+        this.#fecha = new Date(fechaGasto);
         this.#tipoGasto = tipoGasto;
         this.#idIntegrante = idIntegrante;
     }
 
-    static from({id,importe,descripcion,fecha,tipoGasto,idIntegrante}){
-        return new Gasto({id,importe,descripcion,fecha,tipoGasto,idIntegrante});
+    static from({idGasto,importeGasto,descripcionGasto,fechaGasto,tipoGasto,idIntegrante}){
+        return new Gasto({idGasto,importeGasto,descripcionGasto,fechaGasto,tipoGasto,idIntegrante});
     }
 
     static makeEnum(tipo){

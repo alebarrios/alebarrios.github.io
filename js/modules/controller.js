@@ -45,7 +45,7 @@ export default class Controller {
                     const arrIntegrantes = nuevoGrupo.getIntegrantes();
                     let idIntegrante = arrIntegrantes[arrIntegrantes.length - 1]?.getId() || 0;
                     //Agrego al usuario principal al grupo
-                    nuevoGrupo.agregarIntegrante(++idIntegrante,this.#persona);
+                    nuevoGrupo.crearIntegrante(++idIntegrante,this.#persona);
                     
                     //Agrego otros integrantes
                     if(formElements?.integrantesLista){
@@ -53,10 +53,10 @@ export default class Controller {
                         if (integrantes instanceof RadioNodeList){
                             integrantes.forEach( (i) => {
                             console.log(i.value);
-                            nuevoGrupo.agregarIntegrante(++idIntegrante,new Persona(i.value));
+                            nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(i.value));
                             });
                         } else{
-                            nuevoGrupo.agregarIntegrante(++idIntegrante,new Persona(integrantes.value));
+                            nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(integrantes.value));
                         };
                         
                     }
@@ -113,16 +113,21 @@ export default class Controller {
                         tipoGrupo: group.getTipoGrupo() };
                     
                     const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
-                    //RESOLVER BUG
+                    
                     const gastos = group.getGastos();
+
                     const gastosArr = gastos.map(gasto => {
+                        const nombreIntegrante = group.getIntegrantes().find(int => int.getId() == gasto.getIdIntegrante())?.getPersona().getNombre();
+                        const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+                        const fecha = gasto.getFecha().toLocaleDateString('es-ES', dateOptions);
                         return {
                             importe: gasto.getImporte(),
-                            descripcion: gasto.getDescripcion,
-                            fecha: gasto.getFecha(),
-                            integrante: "RANDOM"
+                            descripcion: gasto.getDescripcion(),
+                            fecha,
+                            nombreIntegrante
                         }
                     });
+
                     const mensajeSaldos = group.calcularDeudasPendientes();
                     this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastosArr, mensajeSaldos});
 
@@ -177,9 +182,9 @@ export default class Controller {
                         //validar
                         const idGrupo = formElements.selectGrupo.value;
                         const idIntegrante = parseInt(formElements.selectIntegrante.value);
-                        const importe = formElements.importe.value;
-                        const descripcion = formElements.descripcion.value;
-                        const fecha = formElements.fechaGasto.value;
+                        const importeGasto = formElements.importe.value;
+                        const descripcionGasto = formElements.descripcion.value;
+                        const fechaGasto = formElements.fechaGasto.value;
                         const tipoGasto = formElements.tipoGasto.value;
                         const grupo = this.#myGroups.find(grupo => idGrupo == grupo.getId());
                         const gastos = grupo.getGastos();
@@ -188,10 +193,10 @@ export default class Controller {
                         const idGasto = gastos[gastos.length - 1]?.getId() || 1;
 
                         const gasto = new Gasto({
-                            id: idGasto,
-                            importe,
-                            descripcion,
-                            fecha,
+                            idGasto: idGasto,
+                            importeGasto,
+                            descripcionGasto,
+                            fechaGasto,
                             tipoGasto,
                             idIntegrante
                         });
@@ -237,6 +242,7 @@ export default class Controller {
         .then(data => {
             console.log(data);
             data.userGroups.forEach((gruposObj) => {
+                console.log(gruposObj);
                 this.#myGroups.push(Grupo.from(gruposObj));
             });
         })

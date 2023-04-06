@@ -10,7 +10,16 @@
                     "personaIntegrante": {
                         "nombrePersona": "Usuario Coder"
                     },
-                    "gastosIntegrante": []
+                    "gastosIntegrante": [
+                        {
+                            "idGasto": 1,
+                            "importeGasto": 256,
+                            "descripcionGasto": "Comidita",
+                            "fechaGasto": "2023-04-02T00:00:00.000Z",
+                            "tipoGasto": "comida",
+                            "idIntegrante": 1
+                        }
+                    ]
                 },
                 {
                     "idIntegrante": 2,

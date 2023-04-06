@@ -31,7 +31,7 @@ export default class Grupo {
         const nuevoGrupo = new Grupo(idGrupo, nombreGrupo, this.makeEnum(tipoGrupo));
         integrantes.forEach((integrante) => {
             const nuevoIntegrante = IntegranteGrupo.from(integrante);
-            nuevoGrupo.agregarIntegrante(nuevoIntegrante.getId(), nuevoIntegrante.getPersona());
+            nuevoGrupo.agregarIntegrante(nuevoIntegrante);
         })
         return nuevoGrupo;
     }
@@ -54,7 +54,7 @@ export default class Grupo {
      * @param {Persona} persona - el nuevo integrante a agregar.
      * 
      */
-    agregarIntegrante(id,persona){
+    crearIntegrante(id,persona){
 
         if(this.#saldos.has(id)) {
             console.log("Integrante ya existe en el grupo");
@@ -63,6 +63,18 @@ export default class Grupo {
         
         const integrante = new IntegranteGrupo(id,persona);
         this.#saldos.set(id,0);
+        this.#integrantes.push(integrante);
+        this.#recalcularSaldos();
+    }
+
+    agregarIntegrante(integrante){
+
+        if(this.#saldos.has(integrante.getId())) {
+            console.log("Integrante ya existe en el grupo");
+            return;
+        };
+
+        this.#saldos.set(integrante.getId(),0);
         this.#integrantes.push(integrante);
         this.#recalcularSaldos();
     }

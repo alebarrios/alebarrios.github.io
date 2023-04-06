@@ -348,8 +348,24 @@ export default class HTMLhelper{
       </div>`;
 
         main.innerHTML = 
-           `<h1 class="h3 mb-0 text-gray-800">Mis Grupos</h1>
-           ` + cards;
+           `<div class="row"><h1 class="h3 mb-0 text-gray-800">Mis Grupos</h1>
+           ` + cards + `
+           <div class="card" style="width: 20rem;">
+  <div class="card-body">
+    <h5 class="card-title"><i class="fas fa-info-circle"></i>Grupppp</h5>
+    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"># Integrantes</li>
+    <li class="list-group-item"># Gastos</li>
+  </ul>
+  <div class="card-body">
+  <a href="#" class="btn btn-primary">Ver detalle</a>
+  <a href="#" class="btn btn-danger">Borrar</a>
+  </div>
+</div>
+</div>
+           `;
 
         return main;
     }
@@ -378,14 +394,18 @@ export default class HTMLhelper{
             + `</ul>
             </div>
         </div>`;
+        console.log(gastosArr);
+
+        const stringGastos = gastosArr.map(element => {
+            return `
+            <li class="list-group-item disabled">${element.fecha} - ${element.descripcion} - $${element.importe.toFixed(2)} - ${element.nombreIntegrante}</li>`; 
+        }).join("") || `<li class="list-group-item">Este grupo aún no tiene gastos.</li>`;
 
         const seccionGastos = `
         <div class="card shadow m-2">
             <div class="card-body">
                 <ul class="list-group">` +
-                gastosArr.map(element => {
-                    return `<li class="list-group-item disabled">Importe: $${element.importe.toFixed(2)} - Integrante: ${element.nombreIntegrante}</li>`; 
-                }).join("")
+                stringGastos
             + `</ul>
             </div>
         </div>`;
@@ -393,7 +413,7 @@ export default class HTMLhelper{
         const seccionSaldos = 
         `<div class="card shadow m-2">
             <div class="card-body">` +
-                mensajeSaldos.map(mensaje => `<p>${mensaje}</p>`).join("") + `
+                (mensajeSaldos.map(mensaje => `<p>${mensaje}</p>`).join("") || `<p>No hay saldos para mostrar.</p>`) + `
             </div>
         </div>`;
 

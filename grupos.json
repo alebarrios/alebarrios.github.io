@@ -3,6 +3,7 @@
         {
             "idGrupo": 1,
             "nombreGrupo": "Grupete",
+            "fechaGrupo": "2023-04-01T10:10:00.000Z",
             "tipoGrupo": "amigos",
             "integrantes": [
                 {
@@ -15,7 +16,7 @@
                             "idGasto": 1,
                             "importeGasto": 256,
                             "descripcionGasto": "Comidita",
-                            "fechaGasto": "2023-04-02T00:00:00.000Z",
+                            "fechaGasto": "2023-04-02T10:10:00.000Z",
                             "tipoGasto": "comida",
                             "idIntegrante": 1
                         }
@@ -40,6 +41,7 @@
         {
             "idGrupo": 2,
             "nombreGrupo": "Amigueros",
+            "fechaGrupo": "2023-03-20T10:00:00.000Z",
             "tipoGrupo": "otros",
             "integrantes": [
                 {

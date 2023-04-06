@@ -324,50 +324,64 @@ export default class HTMLhelper{
         this.#document.getElementById("collapseGrupos").classList = "collapse";
         const main = this.#document.getElementById("main-content");
         
-        let cardArray = [];
-           _arrayGrupos.forEach(element => {
-            const card = `<div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary"><span>
-                <a href="#" class="btn-sm btn-info btn-circle" data-id='grupo-${element.id}'>
-                <i class="fas fa-info-circle"></i></a>
-                </span>${element.nombre}
-                </h6>     
+        const cards = _arrayGrupos.map(grupo => {   
+            return `
+            <div class="card border-primary shadow my-1">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fas fa-info-circle pr-1"></i>${grupo.nombre}</h5>
+                    <p class="card-text"><small class="text-muted">Creado el ${grupo.fecha}</small></p>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">${grupo.cantIntegrantes} Integrantes</li>
+                        <li class="list-group-item">Total gastado: $${grupo.gastoTotal} </li>
+                    </ul>    
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary" data-id='ver-grupo-${grupo.id}'>Ver detalle</a>
+                    <a href="#" class="btn btn-danger" data-id='borrar-grupo-${grupo.id}'>Borrar</a>
+                </div>
             </div>
-            <div class="card-body">
-            <p>Id del grupo: ${element.id}</p>
-            <p>Nombre del grupo: ${element.nombre}</p>
-            <p>Cantidad de integrantes: ${element.cantIntegrantes}</p>
+            `
+        }).join(" ") || `<div class="alert alert-secondary" role="alert">Aun no hay grupos creados :(</div>`;
+        
+        main.innerHTML = `
+            <h1 class="h3 mb-0 text-gray-800">Mis Grupos</h1>
+            <div class="row">
+                <div class="col-sm-4" id="grupo-cards">` + 
+                    cards + `
+                </div>
+            </div>
+           
+
+           
+           <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Advertencia</h1>
+                        <button type="button" class="btn-close" data-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Está seguro que quiere borrar el grupo?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="confirma-borrar-grupo" class="btn btn-danger">Borrar</button>
+                    </div>
+                </div>
             </div>
         </div>`;
-            cardArray.push(card);
-        });
-
-        const cards = cardArray.join(" ") || `<div class="alert alert-secondary" role="alert">
-        Aun no hay grupos creados :(
-      </div>`;
-
-        main.innerHTML = 
-           `<div class="row"><h1 class="h3 mb-0 text-gray-800">Mis Grupos</h1>
-           ` + cards + `
-           <div class="card" style="width: 20rem;">
-  <div class="card-body">
-    <h5 class="card-title"><i class="fas fa-info-circle"></i>Grupppp</h5>
-    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item"># Integrantes</li>
-    <li class="list-group-item"># Gastos</li>
-  </ul>
-  <div class="card-body">
-  <a href="#" class="btn btn-primary">Ver detalle</a>
-  <a href="#" class="btn btn-danger">Borrar</a>
-  </div>
-</div>
-</div>
-           `;
 
         return main;
+    }
+
+    removerGrupoHTML(dataId){
+        const main = this.#document.getElementById("grupo-cards");
+        const id = `data-id="borrar-grupo-${dataId}"`;
+        const element = this.#document.querySelector(`.btn[${id}]`).parentNode.parentNode;
+        main.removeChild(element);
     }
     
     displayGrupoPage({info,integrantes,gastosArr,mensajeSaldos}){
@@ -536,6 +550,13 @@ export default class HTMLhelper{
     displayMensajeConError(mensaje){
         const main = this.#document.getElementById("main-content");
         main.innerHTML = `<div class="alert alert-info" role="info">
+        ${mensaje}
+        </div>`
+    }
+
+    displayMensajeSecundario(mensaje){
+        const main = this.#document.getElementById("main-content");
+        main.innerHTML = `<div class="alert alert-secondary" role="alert">
         ${mensaje}
         </div>`
     }

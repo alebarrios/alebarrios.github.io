@@ -11,6 +11,7 @@ export const TipoGrupo = {
 export default class Grupo {
     #id;
     #nombre;
+    #fechaGrupo;
     #integrantes;
     #saldos;
     #tipoGrupo;
@@ -22,13 +23,15 @@ export default class Grupo {
     constructor(_id , _nombre, _tipoGrupo = TipoGrupo.OTROS){
         this.#id = _id;
         this.#nombre = _nombre;
+        this.#fechaGrupo = new Date();
         this.#saldos = new Map();
         this.#integrantes = [];
         this.#tipoGrupo = _tipoGrupo;
     }
 
-    static from({idGrupo, nombreGrupo, tipoGrupo, integrantes}) {
+    static from({idGrupo, nombreGrupo, fechaGrupo, tipoGrupo, integrantes}) {
         const nuevoGrupo = new Grupo(idGrupo, nombreGrupo, this.makeEnum(tipoGrupo));
+        nuevoGrupo.setFecha(fechaGrupo);
         integrantes.forEach((integrante) => {
             const nuevoIntegrante = IntegranteGrupo.from(integrante);
             nuevoGrupo.agregarIntegrante(nuevoIntegrante);
@@ -213,15 +216,28 @@ export default class Grupo {
      * Obtiene un array con los Gastos de todos los Integrantes del Grupo.
      * @return {array} con todos los Gastos.
      */
-        getGastos(){
-            const arrayGastos = [];
-            this.#integrantes.forEach((integrante) => {
-                integrante.getGastos().forEach( (gasto) => {
-                    arrayGastos.push(gasto); 
-                });
+    getGastos(){
+        const arrayGastos = [];
+        this.#integrantes.forEach((integrante) => {
+            integrante.getGastos().forEach( (gasto) => {
+                arrayGastos.push(gasto); 
             });
-            return arrayGastos;
-        }
+        });
+        return arrayGastos;
+    }
+
+    /**
+     * Devuelve la sumatoria de todos los gastos del Grupo.
+     * @return {number} el importe total.
+     */
+    getGastoTotal(){
+        let importeTotal = 0;
+        this.#integrantes.forEach( (integrante) => {
+            importeTotal += integrante.getGastoTotal();
+        });
+        //console.log(`Gasto Total de ${this.#persona.getNombre()} es ${importeTotal}`);
+        return importeTotal;
+    }
 
     /**
      * Obtiene el nombre del grupo.
@@ -229,6 +245,19 @@ export default class Grupo {
      */
     getNombre(){
         return this.#nombre;
+    }
+
+     /**
+     * Obtiene la fecha de creación del grupo.
+     * @return {Date} la fecha de creación.
+     */
+    getFecha(){
+        return this.#fechaGrupo;
+    }
+
+
+    setFecha(fecha){
+        this.#fechaGrupo = new Date(fecha);
     }
 
     /**
@@ -268,6 +297,7 @@ export default class Grupo {
         const obj = {
             idGrupo: this.#id,
             nombreGrupo: this.#nombre,
+            fechaGrupo: this.#fechaGrupo,
             tipoGrupo: this.#tipoGrupo.description,
             integrantes: this.#integrantes.map((item) => JSON.parse(item.getJSON()))
         };

@@ -1,9 +1,8 @@
 /** Clase que representa el controlador de la app js */
 import HTMLhelper from "./HTMLhelper.js";
 import Grupo from "./grupo.js";
-import IntegranteGrupo from "./integrante-grupo.js";
 import Persona from "./persona.js";
-import Gasto, {TipoGasto} from "./gasto.js";
+import Gasto from "./gasto.js";
 import StorageHelper from "./storageHelper.js";
 
 export default class Controller {
@@ -95,22 +94,30 @@ export default class Controller {
 
     setMisGruposPageEventListener(){
         const misGruposItem = this.#myHTMLhelper.getItemHTML("MisGrupos-item");
+
         misGruposItem.addEventListener("click", () => {
             const grupoArrObj = this.#myGroups.map( (group) => {
                 return {id: group.getId(), 
-                        nombre: group.getNombre(), 
-                        cantIntegrantes: group.getIntegrantes().length }
+                        nombre: group.getNombre(),
+                        fecha: group.getFecha().toLocaleDateString(), 
+                        cantIntegrantes: group.getIntegrantes().length,
+                        gastoTotal: group.getGastoTotal() 
+                    }
             });
             this.#myHTMLhelper.displayMisGruposPage(grupoArrObj);
-            //agregar EventListners a cada grupo individual
+            const modalHTML = document.getElementById('exampleModal');
+            const myModal = new bootstrap.Modal(modalHTML);
+
             this.#myGroups.forEach((group) => {   
-                const boton = this.#myHTMLhelper.queryHTML(`.btn-sm[data-id='grupo-${group.getId()}']`);
+                const boton = this.#myHTMLhelper.queryHTML(`.btn[data-id='ver-grupo-${group.getId()}']`);
                 boton.addEventListener("click", () => {
                     const info = {
                         id: group.getId(), 
                         nombre: group.getNombre(), 
                         cantIntegrantes: group.getIntegrantes().length,
-                        tipoGrupo: group.getTipoGrupo() };
+                        tipoGrupo: group.getTipoGrupo(),
+                        gastoTotal: group.getGastoTotal()
+                    };
                     
                     const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
                     
@@ -132,17 +139,40 @@ export default class Controller {
                     this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastosArr, mensajeSaldos});
 
 
-                    const triggerTabList = document.querySelectorAll('.nav-tabs a')
-                        triggerTabList.forEach(triggerEl => {
+                    const triggerTabList = document.querySelectorAll('.nav-tabs a');
+                    triggerTabList.forEach(triggerEl => {
                         const tabTrigger = new bootstrap.Tab(triggerEl)
 
                         triggerEl.addEventListener('click', event => {
                             event.preventDefault();
-                            tabTrigger.show()
-                        })
-                        })
+                            tabTrigger.show();
+                        });
                     });
+                });
+
+
+                const botonBorrar = this.#myHTMLhelper.queryHTML(`.btn[data-id='borrar-grupo-${group.getId()}']`);
+                console.log(`Se agrega eventlistener de botonBorrar en grupo ${group.getId()}`);
+                botonBorrar.addEventListener("click", (e) => {
+                    const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
+                    confirmaBorrar.dataset.grupo = group.getId();
+                    myModal.show();
+                });
+
             });
+
+            const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
+            const funcionConfirmaBorrar = ev => {
+                const idGrupo = parseInt(ev.target.getAttribute("data-grupo"));
+                console.log(idGrupo);
+                this.borrarGrupo(idGrupo);
+                myModal.hide();
+                this.#myHTMLhelper.removerGrupoHTML(ev.target.getAttribute("data-grupo"));
+                this.#myGroups.length == 0 && this.#myHTMLhelper.displayMensajeSecundario("Aun no hay grupos creados :(");
+            };
+    
+            console.log(`Se agrega eventlistener de confirmaBorrar`);
+            confirmaBorrar.addEventListener("click", funcionConfirmaBorrar);
 
         });  
     }
@@ -229,6 +259,10 @@ export default class Controller {
         });  
     }
 
+    borrarGrupo(idGrupo){
+        this.#myGroups.splice(this.#myGroups.findIndex(elem => elem.getId() == idGrupo),1);
+    }
+
 
 
     loadStorage(){
@@ -240,9 +274,9 @@ export default class Controller {
         fetch("../../grupos.json")
         .then(resp => resp.json())
         .then(data => {
-            console.log(data);
+            
             data.userGroups.forEach((gruposObj) => {
-                console.log(gruposObj);
+                
                 this.#myGroups.push(Grupo.from(gruposObj));
             });
         })

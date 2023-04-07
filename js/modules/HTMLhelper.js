@@ -26,7 +26,7 @@ export default class HTMLhelper{
         //Content Wrapper Div
         const contentWrapperElement = this.#AgregarElementoHTML({
             _id: "content-wrapper",
-            _clases: "d-flex flex-columm",
+            _clases: "flex-columm",
             _padre: wrapperElement});
         //Content Div
         const contentElement = this.#AgregarElementoHTML({
@@ -142,8 +142,7 @@ export default class HTMLhelper{
                         Bienvenid@ al divisor de Gastos!
                     </div>
                 </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Ver todas las
-                    alertas</a>`;
+                <a class="dropdown-item text-center small text-gray-500" href="#">Cerrar</a>`;
         //Mensajes
         const navBarMensajes = this.#AgregarElementoHTML({
             _tipo: "li",
@@ -277,10 +276,14 @@ export default class HTMLhelper{
                 `<h1 class="h3 mb-2 text-gray-800">Nuevo Grupo</h1>
                 <div class="row">
                     <div class="col-xl-6 col-md-6 mb-4">
-                        <form class="form" id="form-crear-grupo">
+                        <form class="form needs-validation" id="form-crear-grupo" novalidate>
                             <div class="form-floating">
-                                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" placeholder="Nombre">
+                                <input type="text" class="form-control mb-1 mr-sm-2" id="nombre" placeholder="Nombre">
                                 <label for="nombre">Nombre Grupo</label>
+                                <div class="invalid-feedback">por favor completa este campo</div>
+                                <div class="valid-feedback">
+                                Looks good!
+                                </div>
                             </div>
                             <div class="radio">
                             
@@ -646,6 +649,13 @@ export default class HTMLhelper{
         </div>
         `
         return select;
+    }
+
+    editarBadgeAlerta(cantidadMensajes){
+        const badge = this.#document.querySelector("#alertsDropdown span");
+        if(!badge) return;
+        const campana = this.#document.getElementById("alertsDropdown");
+        cantidadMensajes <= 0 ? campana.removeChild(badge) : badge.innerHTML = cantidadMensajes;
     }
 
 }

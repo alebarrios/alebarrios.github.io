@@ -24,7 +24,7 @@ export default class Controller {
         this.setCrearGastoPageEventListener();
         this.setMisGastosPageEventListener();
         this.setDashboardEventListener();
-        this.setBorrarLocalStorageListener();
+        this.setNavEventsListener();
 
     }
 
@@ -32,13 +32,14 @@ export default class Controller {
         const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGrupo-item");
         crearGrupoItem.addEventListener("click", () => {
 
-        this.#myHTMLhelper.displayNuevoGrupoPage();
+            this.#myHTMLhelper.displayNuevoGrupoPage();
             const formElem = this.#myHTMLhelper.getItemHTML("form-crear-grupo");
             formElem.addEventListener("submit", (e) => {
                 e.preventDefault();
-                let idgrupo = this.#myGroups.length + 1;
-                 
+                let idgrupo = this.#myGroups[this.#myGroups.length - 1].getId() + 1;
                 const formElements = e.target.elements;
+                formElements.nombre.setAttribute('required','');
+                formElem.className = "form was-validated";
                 if (formElements.nombre.value) {
                     
                     console.log(formElements);
@@ -72,7 +73,7 @@ export default class Controller {
                 } else {
                     formElements.nombre.classList.add("is-invalid");
                 };
-                   
+                        
             });
 
             const addIntegranteButton = this.#myHTMLhelper.getItemHTML("button-addon1");
@@ -265,12 +266,17 @@ export default class Controller {
         });  
     }
 
-    setBorrarLocalStorageListener(){
+    setNavEventsListener(){
         const localStorageItem = this.#myHTMLhelper.getItemHTML("borrar-localStorage");
         localStorageItem.addEventListener("click", () => {
             this.#storageHelper.clear();
             window.location.href = "index.html";
-        });  
+        });
+        
+        const campana = this.#myHTMLhelper.getItemHTML("alertsDropdown");
+        campana.addEventListener("click", (e) => {
+            this.#myHTMLhelper.editarBadgeAlerta(0);
+        })
     }
 
     borrarGrupo(idGrupo){

@@ -276,9 +276,9 @@ export default class HTMLhelper{
                 `<h1 class="h3 mb-2 text-gray-800">Nuevo Grupo</h1>
                 <div class="row">
                     <div class="col-xl-6 col-md-6 mb-4">
-                        <form class="form needs-validation" id="form-crear-grupo" novalidate>
+                        <form class="form" id="form-crear-grupo">
                             <div class="form-floating">
-                                <input type="text" class="form-control mb-1 mr-sm-2" id="nombre" placeholder="Nombre">
+                                <input type="text" class="form-control mb-1 mr-sm-2" id="nombre" placeholder="Nombre" required>
                                 <label for="nombre">Nombre Grupo</label>
                                 <div class="invalid-feedback">por favor completa este campo</div>
                                 <div class="valid-feedback">
@@ -304,17 +304,17 @@ export default class HTMLhelper{
                             </div>
                             <div class="input-group mb-3">
                                 <button class="btn btn-outline-secondary" type="button" id="button-addon1"><i class="fas fa-fw fa-plus"></i>Integrante</button>
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" placeholder="Nombre integrante"  id="text-button-addon1">
-                                    <label for="text-button-addon1">Nombre Integrante</label>
-                                </div>
+                                
+                                    <input type="text" class="form-control" placeholder="Nombre" id="text-button-addon1">
+                                    
+                                
                             </div>
-                            <label class="" for="">Integrantes: </label>
+                            <label for="listaNuevoIntegrante">Integrantes: </label>
                             <ul class="list-group" id="listaNuevoIntegrante">
                             <li class="list-group-item disabled">Usuario Coder (Yo)</li>
                             </ul>
                             
-                            <button type="submit" class="btn btn-primary my-2">Crear</button>
+                            <button type="submit" class="btn btn-primary my-2 col-sm-12 col-xs-12 col-md-6 col-lg-6">Crear Grupo</button>
                         </form>
                     </div>
                 </div>`;
@@ -470,6 +470,7 @@ export default class HTMLhelper{
 
     displayDashboardPage(info){  
         this.#document.getElementById("collapseGrupos").classList = "collapse";
+        this.#document.getElementById("collapseGastos").classList = "collapse";
         const main = this.#document.getElementById("main-content");
            main.innerHTML = `
            <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
@@ -540,11 +541,11 @@ export default class HTMLhelper{
                         <form class="form" id="form-crear-gasto">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">$</span>
-                                <input type="text" class="form-control" name="importe">
+                                <input type="number" class="form-control" name="importe" step=".01" required>
                             </div>
                             <div class="form-floating">
-                                <input type="text" class="form-control mb-2 mr-sm-2" id="nombre" name="descripcion">
-                                <label for="nombre">Descripción del gasto</label>
+                                <input type="text" class="form-control mb-2 mr-sm-2" id="descripcion" name="descripcion" required>
+                                <label for="descripcion">Descripción del gasto</label>
                             </div>
                             <label for="radio-gasto">Tipo de Gasto: </label>
                             <div class="radio" id="radio-gasto">
@@ -565,7 +566,7 @@ export default class HTMLhelper{
                                 <label class="btn btn-outline-primary" for="option4">Varios</label>
                             </div>
                             <div class="form-floating">
-                                <input type="date" id="fecha-gasto" class="form-control" name="fechaGasto" />
+                                <input type="date" id="fecha-gasto" class="form-control" name="fechaGasto" required>
                                 <label for="fecha-gasto">Fecha de gasto</label>
                             </div>
                             <div class="form-floating">
@@ -577,7 +578,7 @@ export default class HTMLhelper{
                             </div>
                             <div id="select-integrante">
                             </div>
-                            <button type="submit" class="btn btn-primary my-2">Crear</button>
+                            <button type="submit" class="btn btn-primary my-2 col-sm-12 col-xs-12 col-md-6 col-lg-6">Registrar Gasto</button>
                         </form>
                     </div>
                 </div>`;

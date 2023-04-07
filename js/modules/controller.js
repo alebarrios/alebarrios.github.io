@@ -38,41 +38,34 @@ export default class Controller {
                 e.preventDefault();
                 let idgrupo = this.#myGroups[this.#myGroups.length - 1].getId() + 1;
                 const formElements = e.target.elements;
-                formElements.nombre.setAttribute('required','');
-                formElem.className = "form was-validated";
-                if (formElements.nombre.value) {
                     
-                    console.log(formElements);
-                    const nombreGrupo = formElements.nombre.value;
-                    const tipoGrupo = formElements.options.value;
-                    const nuevoGrupo = new Grupo(idgrupo,nombreGrupo, Grupo.makeEnum(tipoGrupo));
-                        
-                    const arrIntegrantes = nuevoGrupo.getIntegrantes();
-                    let idIntegrante = arrIntegrantes[arrIntegrantes.length - 1]?.getId() || 0;
-                    //Agrego al usuario principal al grupo
-                    nuevoGrupo.crearIntegrante(++idIntegrante,this.#persona);
+                const nombreGrupo = formElements.nombre.value;
+                const tipoGrupo = formElements.options.value;
+                const nuevoGrupo = new Grupo(idgrupo,nombreGrupo, Grupo.makeEnum(tipoGrupo));
                     
-                    //Agrego otros integrantes
-                    if(formElements?.integrantesLista){
-                        const integrantes = formElements.integrantesLista;
-                        if (integrantes instanceof RadioNodeList){
-                            integrantes.forEach( (i) => {
-                            console.log(i.value);
-                            nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(i.value));
-                            });
-                        } else{
-                            nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(integrantes.value));
-                        };
-                        
-                    }
+                const arrIntegrantes = nuevoGrupo.getIntegrantes();
+                let idIntegrante = arrIntegrantes[arrIntegrantes.length - 1]?.getId() || 0;
+                //Agrego al usuario principal al grupo
+                nuevoGrupo.crearIntegrante(++idIntegrante,this.#persona);
+                
+                //Agrego otros integrantes
+                if(formElements?.integrantesLista){
+                    const integrantes = formElements.integrantesLista;
+                    if (integrantes instanceof RadioNodeList){
+                        integrantes.forEach( (i) => {
+                        console.log(i.value);
+                        nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(i.value));
+                        });
+                    } else{
+                        nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(integrantes.value));
+                    };
+                    
+                }
 
-                    this.#myGroups.push(nuevoGrupo);
-                    this.#myHTMLhelper.displayMensajeExitoso(`El grupo ${formElements.nombre.value} ha sido creado!`);
-                    
-                    this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
-                } else {
-                    formElements.nombre.classList.add("is-invalid");
-                };
+                this.#myGroups.push(nuevoGrupo);
+                this.#myHTMLhelper.displayMensajeExitoso(`El grupo ${formElements.nombre.value} ha sido creado!`);
+                
+                this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
                         
             });
 
@@ -190,60 +183,61 @@ export default class Controller {
 
             if(this.#myGroups.length > 0){
                 
-                const arrGrupos = this.#myGroups.map(grupo => {
-                    return { id: grupo.getId(), nombre: grupo.getNombre() }});
+                const arrGrupos = this.#myGroups.map(grupo => {return { id: grupo.getId(), nombre: grupo.getNombre() }});
                 this.#myHTMLhelper.displayNuevoGastoPage(arrGrupos);
-                if (arrGrupos.length == 1){
-                    this.#myHTMLhelper.crearSelectIntegrante(this.#myGroups[0].getIntegrantes().map(int => {
-                        return { id: int.getId(), nombre: int.getPersona().getNombre() }})
-                    );
-                } 
-            
+
+                //Set fecha máxima del Datepicker
+                const datePicker = this.#myHTMLhelper.getItemHTML("fecha-gasto");
+                const dtToday = new Date();
+                let month = dtToday.getMonth() + 1;
+                let day = dtToday.getDate();
+                let year = dtToday.getFullYear();
+                if(month < 10) month = '0' + month.toString();
+                if(day < 10) day = '0' + day.toString();
+                const maxDate = year + '-' + month + '-' + day;
+                datePicker.setAttribute('max', maxDate);
 
                 const selectElem = this.#myHTMLhelper.getItemHTML("form-select-grupo");
                 selectElem.addEventListener("change", e => {
-                    console.log("bla bla");
                     const integrantes = this.#myGroups.find(grupo => e.target.value == grupo.getId()).getIntegrantes();
                     this.#myHTMLhelper.crearSelectIntegrante(integrantes.map(int => {
                         return { id: int.getId(), nombre: int.getPersona().getNombre() }})
                     );
                 });
+                this.#myHTMLhelper.crearSelectIntegrante(this.#myGroups[0].getIntegrantes().map(int => {
+                    return { id: int.getId(), nombre: int.getPersona().getNombre() }})
+                );
 
                 const formElem = this.#myHTMLhelper.getItemHTML("form-crear-gasto");
                 formElem.addEventListener("submit", (e) => {
                     e.preventDefault();
                     console.log(e.target.elements);
                     const formElements = e.target.elements;
-                    if (formElements.nombre.value) {
-                        //validar
-                        const idGrupo = formElements.selectGrupo.value;
-                        const idIntegrante = parseInt(formElements.selectIntegrante.value);
-                        const importeGasto = formElements.importe.value;
-                        const descripcionGasto = formElements.descripcion.value;
-                        const fechaGasto = formElements.fechaGasto.value;
-                        const tipoGasto = formElements.tipoGasto.value;
-                        const grupo = this.#myGroups.find(grupo => idGrupo == grupo.getId());
-                        const gastos = grupo.getGastos();
+                    
+                    const idGrupo = formElements.selectGrupo.value;
+                    const idIntegrante = parseInt(formElements.selectIntegrante.value);
+                    const importeGasto = formElements.importe.value;
+                    const descripcionGasto = formElements.descripcion.value;
+                    const fechaGasto = formElements.fechaGasto.value;
+                    const tipoGasto = formElements.tipoGasto.value;
+                    const grupo = this.#myGroups.find(grupo => idGrupo == grupo.getId());
+                    const gastos = grupo.getGastos();
 
-                        //REVALIDAR
-                        const idGasto = gastos[gastos.length - 1]?.getId() || 1;
+                    const idGasto = gastos[gastos.length - 1]?.getId() || 1;
 
-                        const gasto = new Gasto({
-                            idGasto: idGasto,
-                            importeGasto,
-                            descripcionGasto,
-                            fechaGasto,
-                            tipoGasto,
-                            idIntegrante
-                        });
+                    const gasto = new Gasto({
+                        idGasto: idGasto,
+                        importeGasto,
+                        descripcionGasto,
+                        fechaGasto,
+                        tipoGasto,
+                        idIntegrante
+                    });
 
-                        grupo.registrarNuevoGasto(gasto);
-             
-                        this.#myHTMLhelper.displayMensajeExitoso(`El gasto ${formElements.nombre.value} ha sido agregado!`);
-                        this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
-                    } else {
-                        formElements.nombre.classList.add("is-invalid");
-                    };
+                    grupo.registrarNuevoGasto(gasto);
+            
+                    this.#myHTMLhelper.displayMensajeExitoso(`El gasto ${formElements.descripcion.value} ha sido agregado!`);
+                    this.#storageHelper.guardar(this.#myGroups.map( (item) => JSON.parse(item.getJSON())));
                     
                 });
             }
@@ -253,7 +247,8 @@ export default class Controller {
     setMisGastosPageEventListener(){
         const misGastosItem = this.#myHTMLhelper.getItemHTML("MisGastos-item");
         misGastosItem.addEventListener("click", () => {
-            this.#myHTMLhelper.getItemHTML("main-content").innerHTML = `<h1 class="h3 mb-0 text-gray-800">Mis Gastos</h1>`;
+            this.#myHTMLhelper.getItemHTML("main-content").innerHTML = `<h1 class="h3 mb-0 text-gray-800">Mis Gastos</h1>`
+            this.#myHTMLhelper.getItemHTML("collapseGastos").classList = "collapse";
             this.displayDashboardCharts("main-content");
         }); 
     }
@@ -357,6 +352,10 @@ export default class Controller {
     }
 
     displayDashboardCharts(container){
+        if(this.#myGroups.length == 0) {
+            this.#myHTMLhelper.displayMensajeSecundario("Aun no hay grupos creados :(");
+        } else {
+
         const mesesParaAtras = 6;
             const {meses, importes} = this.getGastosUsuarioUltimosMeses(mesesParaAtras,1);
             const mesesNombre = meses.map(mesId => {
@@ -368,6 +367,7 @@ export default class Controller {
 
             const {nombresGrupo, gastosTotales} = this.getGastosUsuarioPorGrupo(1);
             this.#myChartHelper.displayDonutChart(container, "Distribución de Gastos", "Gasto Total ($)", nombresGrupo, gastosTotales);
+        }
     }
 
     loadStorage(){

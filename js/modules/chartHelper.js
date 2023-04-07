@@ -46,7 +46,7 @@ export default class ChartHelper {
     }
 
     displayDonutChart(id, titulo, labelChart, dataX, dataY){
-        console.log("displayDonutChart");
+        //console.log("displayDonutChart");
         const padre = this.#document.getElementById(id);
         const chartDiv = this.#document.createElement("div");
         chartDiv.innerHTML = `

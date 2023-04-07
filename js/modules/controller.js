@@ -53,7 +53,6 @@ export default class Controller {
                     const integrantes = formElements.integrantesLista;
                     if (integrantes instanceof RadioNodeList){
                         integrantes.forEach( (i) => {
-                        console.log(i.value);
                         nuevoGrupo.crearIntegrante(++idIntegrante,new Persona(i.value));
                         });
                     } else{
@@ -79,7 +78,6 @@ export default class Controller {
                     integrante.value = "";
                     //Evento borrar Integrantee
                     itemLista.childNodes[1].addEventListener("click", (e) => {
-                        console.log(e.target);
                         this.#myHTMLhelper.borrarIntegrante("listaNuevoIntegrante", e.target.parentNode);
                     });
                 } else {
@@ -124,8 +122,8 @@ export default class Controller {
 
                     const gastosArr = gastos.map(gasto => {
                         const nombreIntegrante = group.getIntegrantes().find(int => int.getId() == gasto.getIdIntegrante())?.getPersona().getNombre();
-                        const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-                        const fecha = gasto.getFecha().toLocaleDateString('es-ES', dateOptions);
+                        //const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+                        const fecha = gasto.getFecha().toLocaleDateString('es-ES');
                         return {
                             importe: gasto.getImporte(),
                             descripcion: gasto.getDescripcion(),
@@ -151,7 +149,7 @@ export default class Controller {
 
 
                 const botonBorrar = this.#myHTMLhelper.queryHTML(`.btn[data-id='borrar-grupo-${group.getId()}']`);
-                console.log(`Se agrega eventlistener de botonBorrar en grupo ${group.getId()}`);
+                //console.log(`Se agrega eventlistener de botonBorrar en grupo ${group.getId()}`);
                 botonBorrar.addEventListener("click", (e) => {
                     const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
                     confirmaBorrar.dataset.grupo = group.getId();
@@ -163,14 +161,13 @@ export default class Controller {
             const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
             const funcionConfirmaBorrar = ev => {
                 const idGrupo = parseInt(ev.target.getAttribute("data-grupo"));
-                console.log(idGrupo);
                 this.borrarGrupo(idGrupo);
                 myModal.hide();
                 this.#myHTMLhelper.removerGrupoHTML(ev.target.getAttribute("data-grupo"));
                 this.#myGroups.length == 0 && this.#myHTMLhelper.displayMensajeSecundario("Aun no hay grupos creados :(");
             };
     
-            console.log(`Se agrega eventlistener de confirmaBorrar`);
+            //console.log(`Se agrega eventlistener de confirmaBorrar`);
             confirmaBorrar.addEventListener("click", funcionConfirmaBorrar);
 
         });  
@@ -179,7 +176,7 @@ export default class Controller {
     setCrearGastoPageEventListener(){
         const crearGrupoItem = this.#myHTMLhelper.getItemHTML("CrearGasto-item");
         crearGrupoItem.addEventListener("click", () => {
-            console.log("setCrearGastoPageEventListener");
+            //console.log("setCrearGastoPageEventListener");
 
             if(this.#myGroups.length > 0){
                 
@@ -211,7 +208,7 @@ export default class Controller {
                 const formElem = this.#myHTMLhelper.getItemHTML("form-crear-gasto");
                 formElem.addEventListener("submit", (e) => {
                     e.preventDefault();
-                    console.log(e.target.elements);
+                    
                     const formElements = e.target.elements;
                     
                     const idGrupo = formElements.selectGrupo.value;
@@ -300,14 +297,14 @@ export default class Controller {
     }
 
     getGastosUsuarioUltimosMeses(cantMeses, idIntegrante){
-        console.log("getGastosUsuarioPorFecha");
+        //console.log("getGastosUsuarioPorFecha");
         const gastos = [];
         this.#myGroups.forEach((grupo) => {
             gastos.push(...grupo.getGastos());
         });
         //gastos.sort((g1, g2) => new Date(g1.getFecha()).setHours(0, 0, 0, 0) - new Date(g2.getFecha()).setHours(0, 0, 0, 0));
         let ultimoMes = gastos[gastos.length - 1].getFecha().getMonth();
-        console.log(ultimoMes);
+
         //Tomo los ultimos X meses
         const arrayMeses = [];
         for (let index = (cantMeses - 1) * -1; index <= 0; index++) {
@@ -333,16 +330,14 @@ export default class Controller {
     }
 
     getGastosUsuarioPorGrupo(idIntegrante){
-        console.log("getGastosUsuarioPorGrupo");
+        //console.log("getGastosUsuarioPorGrupo");
         const grupos = [];
         this.#myGroups.forEach((grupo) => {
             grupo.getIntegrantes().find(int => int.getId() == idIntegrante) && grupos.push(grupo); 
         });
-        console.log(grupos);
         const gastosTotales = grupos.map((grupo) => {
             return grupo.getGastoDeIntegrante(idIntegrante);
         });
-        console.log(gastosTotales);
         const obj = {
             nombresGrupo : grupos.map(grupo => grupo.getNombre()),
             gastosTotales

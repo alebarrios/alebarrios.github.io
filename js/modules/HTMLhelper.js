@@ -411,11 +411,10 @@ export default class HTMLhelper{
             + `</ul>
             </div>
         </div>`;
-        console.log(gastosArr);
 
         const stringGastos = gastosArr.map(element => {
             return `
-            <li class="list-group-item disabled">${element.fecha} - ${element.descripcion} - $${element.importe.toFixed(2)} - ${element.nombreIntegrante}</li>`; 
+            <li class="list-group-item disabled">${element.fecha} - ${element.descripcion} - <strong>$${element.importe.toFixed(2)}</strong> - ${element.nombreIntegrante}</li>`; 
         }).join("") || `<li class="list-group-item">Este grupo aún no tiene gastos.</li>`;
 
         const seccionGastos = `

@@ -244,7 +244,7 @@ export default class Grupo {
      * @return {number} el importe total.
      */
     getGastoDeIntegrante(idIntegrante){
-        console.log(`Revisando gastos de ${idIntegrante} en Grupo ${this.#id}`);
+        //console.log(`Revisando gastos de ${idIntegrante} en Grupo ${this.#id}`);
         const integrante = this.#integrantes.find( integrante => integrante.getId() == idIntegrante);
         return integrante.getGastoTotal() || 0;
     }

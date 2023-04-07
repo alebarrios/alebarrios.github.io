@@ -1,4 +1,4 @@
-import Gasto, {TipoGasto} from "./gasto.js";
+import Gasto from "./gasto.js";
 import Persona from "./persona.js";
 
 /** Clase que representa un Integrante de un Grupo. */
@@ -6,7 +6,6 @@ export default class IntegranteGrupo {
     #id;
     #persona;
     #gastos;
-    //#grupo;
 
     /**
      * Crea un objeto tipo IntegranteGrupo.

@@ -1,5 +1,6 @@
 /** Clase que representa el controlador de la app js */
 import HTMLhelper from "./HTMLhelper.js";
+import ChartHelper from "./chartHelper.js";
 import Grupo from "./grupo.js";
 import Persona from "./persona.js";
 import Gasto from "./gasto.js";
@@ -7,18 +8,21 @@ import StorageHelper from "./storageHelper.js";
 
 export default class Controller {
     #myHTMLhelper;
+    #myChartHelper;
     #myGroups = [];
     #persona;
     #storageHelper;
 
     constructor(){
         this.#myHTMLhelper = new HTMLhelper(document);
+        this.#myChartHelper = new ChartHelper(document);
         this.#storageHelper = new StorageHelper();
         this.#persona = new Persona("Usuario Coder");
         this.loadStorage();
         this.setCrearGrupoPageEventListener();
         this.setMisGruposPageEventListener();
         this.setCrearGastoPageEventListener();
+        this.setMisGastosPageEventListener();
         this.setDashboardEventListener();
         this.setBorrarLocalStorageListener();
 
@@ -245,10 +249,19 @@ export default class Controller {
         });
     }
 
+    setMisGastosPageEventListener(){
+        const misGastosItem = this.#myHTMLhelper.getItemHTML("MisGastos-item");
+        misGastosItem.addEventListener("click", () => {
+            this.#myHTMLhelper.getItemHTML("main-content").innerHTML = `<h1 class="h3 mb-0 text-gray-800">Mis Gastos</h1>`;
+            this.displayDashboardCharts("main-content");
+        }); 
+    }
+
     setDashboardEventListener(){
         const dashboardItem = this.#myHTMLhelper.getItemHTML("dashboard-item");
         dashboardItem.addEventListener("click", () => {
             this.#myHTMLhelper.displayDashboardPage(this.getInfoUsuario());
+            this.displayDashboardCharts("contenido");
         });  
     }
 
@@ -285,6 +298,72 @@ export default class Controller {
         return info;
     }
 
+    getGastosUsuarioUltimosMeses(cantMeses, idIntegrante){
+        console.log("getGastosUsuarioPorFecha");
+        const gastos = [];
+        this.#myGroups.forEach((grupo) => {
+            gastos.push(...grupo.getGastos());
+        });
+        //gastos.sort((g1, g2) => new Date(g1.getFecha()).setHours(0, 0, 0, 0) - new Date(g2.getFecha()).setHours(0, 0, 0, 0));
+        let ultimoMes = gastos[gastos.length - 1].getFecha().getMonth();
+        console.log(ultimoMes);
+        //Tomo los ultimos X meses
+        const arrayMeses = [];
+        for (let index = (cantMeses - 1) * -1; index <= 0; index++) {
+            let mes = ultimoMes + index;
+            mes < 0 ? mes += 12 : mes ;
+            arrayMeses.push(mes);
+        }
+
+        const arrayTotalGastosPorMes = [];
+        arrayMeses.forEach((mes) => {
+            let totalPorMes = 0;
+            gastos.forEach((gasto) => {
+                if(gasto.getFecha().getMonth() == mes && gasto.getIdIntegrante() == idIntegrante) 
+                    totalPorMes += gasto.getImporte();
+            });
+            arrayTotalGastosPorMes.push(totalPorMes);
+        });
+        const obj = {
+            meses: arrayMeses,
+            importes: arrayTotalGastosPorMes
+        };
+        return obj; 
+    }
+
+    getGastosUsuarioPorGrupo(idIntegrante){
+        console.log("getGastosUsuarioPorGrupo");
+        const grupos = [];
+        this.#myGroups.forEach((grupo) => {
+            grupo.getIntegrantes().find(int => int.getId() == idIntegrante) && grupos.push(grupo); 
+        });
+        console.log(grupos);
+        const gastosTotales = grupos.map((grupo) => {
+            return grupo.getGastoDeIntegrante(idIntegrante);
+        });
+        console.log(gastosTotales);
+        const obj = {
+            nombresGrupo : grupos.map(grupo => grupo.getNombre()),
+            gastosTotales
+        };
+
+        return obj;
+    }
+
+    displayDashboardCharts(container){
+        const mesesParaAtras = 6;
+            const {meses, importes} = this.getGastosUsuarioUltimosMeses(mesesParaAtras,1);
+            const mesesNombre = meses.map(mesId => {
+                const fecha = new Date();
+                fecha.setMonth(mesId);
+                return fecha.toLocaleString("es-ES", { month: 'long' });
+            });  
+            this.#myChartHelper.displayBarChart(container,`Gastos Usuario (últimos ${mesesParaAtras} meses)`, "Gastos ($)", mesesNombre,importes,);
+
+            const {nombresGrupo, gastosTotales} = this.getGastosUsuarioPorGrupo(1);
+            this.#myChartHelper.displayDonutChart(container, "Distribución de Gastos", "Gasto Total ($)", nombresGrupo, gastosTotales);
+    }
+
     loadStorage(){
      /*    const gruposObjArr = this.#storageHelper.obtener();
         gruposObjArr?.forEach((gruposObj) => {
@@ -300,6 +379,7 @@ export default class Controller {
                 this.#myGroups.push(Grupo.from(gruposObj));
             });
             this.#myHTMLhelper.displayDashboardPage(this.getInfoUsuario());
+            this.displayDashboardCharts("contenido");
         })
         .catch(err => console.log("Error leyendo json:" + err))
 

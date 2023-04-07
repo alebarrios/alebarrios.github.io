@@ -3,7 +3,7 @@
         {
             "idGrupo": 1,
             "nombreGrupo": "Grupete",
-            "fechaGrupo": "2023-04-01T10:10:00.000Z",
+            "fechaGrupo": "2022-12-05T10:10:00.000Z",
             "tipoGrupo": "amigos",
             "integrantes": [
                 {
@@ -16,7 +16,7 @@
                             "idGasto": 1,
                             "importeGasto": 256,
                             "descripcionGasto": "Comidita",
-                            "fechaGasto": "2023-04-02T10:10:00.000Z",
+                            "fechaGasto": "2023-01-02T10:10:00.000Z",
                             "tipoGasto": "comida",
                             "idIntegrante": 1
                         }
@@ -69,6 +69,45 @@
                     "idIntegrante": 4,
                     "personaIntegrante": {
                         "nombrePersona": "Damián"
+                    },
+                    "gastosIntegrante": []
+                }
+            ]
+        },
+        {
+            "idGrupo": 3,
+            "nombreGrupo": "Escapada al campo",
+            "fechaGrupo": "2023-04-07T00:51:30.392Z",
+            "tipoGrupo": "viaje",
+            "integrantes": [
+                {
+                    "idIntegrante": 1,
+                    "personaIntegrante": {
+                        "nombrePersona": "Usuario Coder"
+                    },
+                    "gastosIntegrante": [
+                        {
+                            "idGasto": 1,
+                            "importeGasto": 2000,
+                            "descripcionGasto": "Combustible",
+                            "fechaGasto": "2023-03-17T00:00:00.000Z",
+                            "tipoGasto": "combustible",
+                            "idIntegrante": 1
+                        },
+                        {
+                            "idGasto": 1,
+                            "importeGasto": 1050,
+                            "descripcionGasto": "Empanadas",
+                            "fechaGasto": "2023-04-05T00:00:00.000Z",
+                            "tipoGasto": "comida",
+                            "idIntegrante": 1
+                        }
+                    ]
+                },
+                {
+                    "idIntegrante": 2,
+                    "personaIntegrante": {
+                        "nombrePersona": "Guido"
                     },
                     "gastosIntegrante": []
                 }

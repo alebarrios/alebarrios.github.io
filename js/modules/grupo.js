@@ -114,6 +114,16 @@ export default class Grupo {
     }
 
     /**
+     * Elimina un gasto de un integrante del grupo. Se recalculan los saldos de todos los integrantes.
+     * @param {number} id Integrante - el Id del Integrante al que pertenece el gasto.
+     * @param {number} id Gasto - el Id del gasto a eliminar.
+     */
+    removerGasto(idIntegrante,idGasto){
+        this.#integrantes.find(int => int.getId() == idIntegrante)?.removerGasto(idGasto);
+        this.#recalcularSaldos();
+    }
+
+    /**
      * Recalcula los saldos de todos los integrantes.
      */
     #recalcularSaldos(){

@@ -36,6 +36,14 @@ export default class IntegranteGrupo {
     }
 
     /**
+     * Remueve un  gasto del integrante.
+     * @param {number} id Gasto - el id del gasto a eliminar.
+     */
+    removerGasto(idGasto){
+        this.#gastos.splice(this.#gastos.findIndex(elem => elem.getId() == idGasto),1);
+    }
+
+    /**
      * Devuelve la sumatoria de todos los gastos del integrante.
      * @return {number} el importe total.
      */

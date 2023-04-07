@@ -411,18 +411,30 @@ export default class HTMLhelper{
             + `</ul>
             </div>
         </div>`;
-
+                console.log("displayGrupoPage");
         const stringGastos = gastosArr.map(element => {
             return `
-            <li class="list-group-item disabled">${element.fecha} - ${element.descripcion} - <strong>$${element.importe.toFixed(2)}</strong> - ${element.nombreIntegrante}</li>`; 
+            <a class="list-group-item list-group-item-action" data-id-integrante="${element.idIntegrante}" data-id="${element.idGasto}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"><strong>$${element.importe.toFixed(2)}</strong></h5>
+                    <p class="mb-1"><i class="fas fa-fw fa-${element.icono}"></i></p>
+                </div>   
+                <p class="my-2">${element.descripcion}</p>
+                <div class="d-flex w-100 justify-content-between">
+                    <small class="text-muted">${element.fecha}</small>
+                    <small class="text-muted">${element.nombreIntegrante}</small>
+                </div>
+            </a>
+            `; 
         }).join("") || `<li class="list-group-item">Este grupo aún no tiene gastos.</li>`;
 
         const seccionGastos = `
         <div class="card shadow m-2">
             <div class="card-body">
-                <ul class="list-group">` +
-                stringGastos
-            + `</ul>
+                <ul class="list-group"> 
+                ` +
+                stringGastos +
+               `</ul>
             </div>
         </div>`;
 

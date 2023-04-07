@@ -2,7 +2,7 @@
     "userGroups": [
         {
             "idGrupo": 1,
-            "nombreGrupo": "Grupete",
+            "nombreGrupo": "Los mejores amigos",
             "fechaGrupo": "2022-12-05T10:10:00.000Z",
             "tipoGrupo": "amigos",
             "integrantes": [
@@ -19,6 +19,14 @@
                             "fechaGasto": "2023-01-02T10:10:00.000Z",
                             "tipoGasto": "comida",
                             "idIntegrante": 1
+                        },
+                        {
+                            "idGasto": 2,
+                            "importeGasto": 550,
+                            "descripcionGasto": "Viandas",
+                            "fechaGasto": "2023-01-01T10:10:00.000Z",
+                            "tipoGasto": "comida",
+                            "idIntegrante": 1
                         }
                     ]
                 },
@@ -27,7 +35,16 @@
                     "personaIntegrante": {
                         "nombrePersona": "Juan"
                     },
-                    "gastosIntegrante": []
+                    "gastosIntegrante": [
+                        {
+                            "idGasto": 1,
+                            "importeGasto": 7600,
+                            "descripcionGasto": "Tanque lleno YPF",
+                            "fechaGasto": "2023-01-05T10:10:00.000Z",
+                            "tipoGasto": "combustible",
+                            "idIntegrante": 2
+                        }
+                    ]
                 },
                 {
                     "idIntegrante": 3,
@@ -40,7 +57,7 @@
         },
         {
             "idGrupo": 2,
-            "nombreGrupo": "Amigueros",
+            "nombreGrupo": "Futbol 5",
             "fechaGrupo": "2023-03-20T10:00:00.000Z",
             "tipoGrupo": "otros",
             "integrantes": [
@@ -78,7 +95,7 @@
             "idGrupo": 3,
             "nombreGrupo": "Escapada al campo",
             "fechaGrupo": "2023-04-07T00:51:30.392Z",
-            "tipoGrupo": "viaje",
+            "tipoGrupo": "pareja",
             "integrantes": [
                 {
                     "idIntegrante": 1,

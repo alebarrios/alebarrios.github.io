@@ -124,11 +124,15 @@ export default class Controller {
                         const nombreIntegrante = group.getIntegrantes().find(int => int.getId() == gasto.getIdIntegrante())?.getPersona().getNombre();
                         //const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
                         const fecha = gasto.getFecha().toLocaleDateString('es-ES');
+                        const mapa = new Map([["comida","utensils"],["alojamiento","bed"],["combustible","gas-pump"],["varios","dollar-sign"]]);
                         return {
                             importe: gasto.getImporte(),
                             descripcion: gasto.getDescripcion(),
                             fecha,
-                            nombreIntegrante
+                            nombreIntegrante,
+                            idGasto : gasto.getId(),
+                            idIntegrante : gasto.getIdIntegrante(),
+                            icono : mapa.get(gasto.getTipoGasto())
                         }
                     });
 
@@ -281,6 +285,7 @@ export default class Controller {
         },0);
 
         const totalGastado = this.#myGroups.reduce((acum, grupo) => {
+            console.log(grupo);
             return acum + grupo.getGastoDeIntegrante(1);
         },0);
 

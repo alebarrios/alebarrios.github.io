@@ -341,7 +341,7 @@ export default class HTMLhelper{
                     </ul>    
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary" data-id='ver-grupo-${grupo.id}'>Ver detalle</a>
+                    <a href="#" class="btn btn-info" data-id='ver-grupo-${grupo.id}'>Ver detalle</a>
                     <a href="#" class="btn btn-danger" data-id='borrar-grupo-${grupo.id}'>Borrar</a>
                 </div>
             </div>
@@ -387,16 +387,16 @@ export default class HTMLhelper{
         main.removeChild(element);
     }
     
-    displayGrupoPage({info,integrantes,gastosArr,mensajeSaldos}){
+    displayGrupoPage({info,integrantes,gastosArr,arraySaldos}){
         const main = this.#document.getElementById("main-content");
 
         const seccionInfo = `
         <div class="card shadow m-2">
             <div class="card-body">
-                <p>Id del grupo: ${info.id}</p>
-                <p class="text-capitalize">Nombre del grupo: ${info.nombre}</p>
-                <p>Tipo del grupo: ${info.tipoGrupo}</p>
-                <p>Cantidad de integrantes: ${info.cantIntegrantes}</p>
+                <p>Id: <strong>#${info.id}</strong></p>
+                <p class="text-capitalize">Nombre: <strong>${info.nombre}</strong></p>
+                <p class="text-capitalize">Tipo: <strong>${info.tipoGrupo}</strong></p>
+                <p># de integrantes: <strong>${info.cantIntegrantes}</strong></p>
             </div>
         </div>
         `;
@@ -406,7 +406,7 @@ export default class HTMLhelper{
             <div class="card-body">
                 <ul class="list-group list-group-flush">` +
                 integrantes.map(element => {
-                    return `<li class="list-group-item"><i class="fas fa-fw fa-user"></i>${element}</li>`; 
+                    return `<li class="list-group-item"><i class="fas fa-user text-primary mr-2"></i>${element}</li>`; 
                 }).join("")
             + `</ul>
             </div>
@@ -441,37 +441,43 @@ export default class HTMLhelper{
         const seccionSaldos = 
         `<div class="card shadow m-2">
             <div class="card-body">` +
-                (mensajeSaldos.map(mensaje => `<p>${mensaje}</p>`).join("") || `<p>No hay saldos para mostrar.</p>`) + `
+                (arraySaldos.map(saldo => 
+                `<p><span class="font-weight-bold text-danger">${saldo.deudor}</span> le debe a 
+                <span class="font-weight-bold text-primary">${saldo.acreedor}</span> la suma de <strong>$${saldo.importe}</strong></p>`).join("") || 
+                `<p>No hay saldos para mostrar.</p>`) + `
             </div>
         </div>`;
 
         const grupoPage = `
         <h1 class="h3 mb-2 text-gray-800 text-capitalize">Grupo ${info.nombre}</h1>
         <div class="row">
-                    <div class="col-xl-6 col-xxl-2 col-md-6 mb-4">
-        <div class="card shadow mb-4">    
-            <ul class="nav nav-tabs px-1 pt-1">
-                <li class="active"><a class="nav-link font-weight-bold text-primary active" data-toggle="tab" href="#home">General</a></li>
-                <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu1">Integrantes</a></li>
-                <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu2">Gastos</a></li>
-                <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu3">Saldos</a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="home" class="tab-pane fade in active show">` +
-                seccionInfo + `
-                </div>
-                <div id="menu1" class="tab-pane fade">` +
-                seccionIntegrantes + `
-                </div>
-                <div id="menu2" class="tab-pane fade">` +
-                seccionGastos + `
-                </div>
-                <div id="menu3" class="tab-pane fade">` +
-                seccionSaldos + `
+            <div class="col-xl-6 col-xxl-2 col-md-6 mb-2">
+                <div class="card shadow mb-2">    
+                    <ul class="nav nav-tabs px-1 pt-1">
+                        <li class="active"><a class="nav-link font-weight-bold text-primary active" data-toggle="tab" href="#home">General</a></li>
+                        <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu1">Integrantes</a></li>
+                        <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu2">Gastos</a></li>
+                        <li><a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#menu3">Saldos</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane fade in active show">` +
+                        seccionInfo + `
+                        </div>
+                        <div id="menu1" class="tab-pane fade">` +
+                        seccionIntegrantes + `
+                        </div>
+                        <div id="menu2" class="tab-pane fade">` +
+                        seccionGastos + `
+                        </div>
+                        <div id="menu3" class="tab-pane fade">` +
+                        seccionSaldos + `
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
+            <div class="d-flex w-100 justify-content-between">
+                <a href="#" id="boton-atras-grupo" class="btn btn-info"><i class="fas fa-fw fa-arrow-left"></i>Atrás</a>
+            </div>
         </div>`;
         
         main.innerHTML = grupoPage;

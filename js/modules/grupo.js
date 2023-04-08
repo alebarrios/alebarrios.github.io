@@ -194,14 +194,16 @@ export default class Grupo {
                         integrantes[j][1] = 0;
                         let mensajeDeuda = `${deudor[0]} le debe a ${integrante[0]} : ${saldoAFavor.toFixed(2)} pesos`;
                         //console.log(newMensaje);
-                        arrayDeudas.push(mensajeDeuda);
+                        const obj = {deudor: deudor[0], acreedor: integrante[0], importe: saldoAFavor.toFixed(2)};
+                        arrayDeudas.push(obj);
                     } else{
                         //El deudor deja de estar moroso, pero el otro integrante aun tiene saldo a favor (o cero).
                             deudor[1] = 0;
                             integrantes[j][1] = saldoAFavor - deuda;
                             let mensajeDeuda = `${deudor[0]} le debe a ${integrante[0]} : ${deuda.toFixed(2)} pesos`;
                             //console.log(newMensaje);
-                            arrayDeudas.push(mensajeDeuda);
+                            const obj = {deudor: deudor[0], acreedor: integrante[0], importe: deuda.toFixed(2)};
+                            arrayDeudas.push(obj);
                             break;
                     }
                 };

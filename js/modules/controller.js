@@ -92,89 +92,95 @@ export default class Controller {
     setMisGruposPageEventListener(){
         const misGruposItem = this.#myHTMLhelper.getItemHTML("MisGrupos-item");
 
-        misGruposItem.addEventListener("click", () => {
-            const grupoArrObj = this.#myGroups.map( (group) => {
-                return {id: group.getId(), 
-                        nombre: group.getNombre(),
-                        fecha: group.getFecha().toLocaleDateString(), 
-                        cantIntegrantes: group.getIntegrantes().length,
-                        gastoTotal: group.getGastoTotal() 
+        misGruposItem.addEventListener("click", this.#funcionDisplayMisGrupos);  
+    }
+
+    #funcionDisplayMisGrupos = () => {
+        const grupoArrObj = this.#myGroups.map( (group) => {
+            return {id: group.getId(), 
+                    nombre: group.getNombre(),
+                    fecha: group.getFecha().toLocaleDateString(), 
+                    cantIntegrantes: group.getIntegrantes().length,
+                    gastoTotal: group.getGastoTotal() 
+                }
+        });
+        this.#myHTMLhelper.displayMisGruposPage(grupoArrObj);
+        const modalHTML = document.getElementById('exampleModal');
+        const myModal = new bootstrap.Modal(modalHTML);
+
+        this.#myGroups.forEach((group) => {   
+            const boton = this.#myHTMLhelper.queryHTML(`.btn[data-id='ver-grupo-${group.getId()}']`);
+            boton.addEventListener("click", () => {
+                const info = {
+                    id: group.getId(), 
+                    nombre: group.getNombre(), 
+                    cantIntegrantes: group.getIntegrantes().length,
+                    tipoGrupo: group.getTipoGrupo(),
+                    gastoTotal: group.getGastoTotal()
+                };
+                
+                const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
+                
+                const gastos = group.getGastos();
+
+                const gastosArr = gastos.map(gasto => {
+                    const nombreIntegrante = group.getIntegrantes().find(int => int.getId() == gasto.getIdIntegrante())?.getPersona().getNombre();
+                    //const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+                    const fecha = gasto.getFecha().toLocaleDateString('es-ES');
+                    const mapa = new Map([["comida","utensils"],["alojamiento","bed"],["combustible","gas-pump"],["varios","dollar-sign"]]);
+                    return {
+                        importe: gasto.getImporte(),
+                        descripcion: gasto.getDescripcion(),
+                        fecha,
+                        nombreIntegrante,
+                        idGasto : gasto.getId(),
+                        idIntegrante : gasto.getIdIntegrante(),
+                        icono : mapa.get(gasto.getTipoGasto())
                     }
-            });
-            this.#myHTMLhelper.displayMisGruposPage(grupoArrObj);
-            const modalHTML = document.getElementById('exampleModal');
-            const myModal = new bootstrap.Modal(modalHTML);
-
-            this.#myGroups.forEach((group) => {   
-                const boton = this.#myHTMLhelper.queryHTML(`.btn[data-id='ver-grupo-${group.getId()}']`);
-                boton.addEventListener("click", () => {
-                    const info = {
-                        id: group.getId(), 
-                        nombre: group.getNombre(), 
-                        cantIntegrantes: group.getIntegrantes().length,
-                        tipoGrupo: group.getTipoGrupo(),
-                        gastoTotal: group.getGastoTotal()
-                    };
-                    
-                    const integrantes = group.getIntegrantes().map((int) => int.getPersona().getNombre());
-                    
-                    const gastos = group.getGastos();
-
-                    const gastosArr = gastos.map(gasto => {
-                        const nombreIntegrante = group.getIntegrantes().find(int => int.getId() == gasto.getIdIntegrante())?.getPersona().getNombre();
-                        //const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-                        const fecha = gasto.getFecha().toLocaleDateString('es-ES');
-                        const mapa = new Map([["comida","utensils"],["alojamiento","bed"],["combustible","gas-pump"],["varios","dollar-sign"]]);
-                        return {
-                            importe: gasto.getImporte(),
-                            descripcion: gasto.getDescripcion(),
-                            fecha,
-                            nombreIntegrante,
-                            idGasto : gasto.getId(),
-                            idIntegrante : gasto.getIdIntegrante(),
-                            icono : mapa.get(gasto.getTipoGasto())
-                        }
-                    });
-
-                    const mensajeSaldos = group.calcularDeudasPendientes();
-                    this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastosArr, mensajeSaldos});
-
-
-                    const triggerTabList = document.querySelectorAll('.nav-tabs a');
-                    triggerTabList.forEach(triggerEl => {
-                        const tabTrigger = new bootstrap.Tab(triggerEl)
-
-                        triggerEl.addEventListener('click', event => {
-                            event.preventDefault();
-                            tabTrigger.show();
-                        });
-                    });
                 });
 
+                const arraySaldos = group.calcularDeudasPendientes();
+                this.#myHTMLhelper.displayGrupoPage({info,integrantes, gastosArr, arraySaldos});
 
-                const botonBorrar = this.#myHTMLhelper.queryHTML(`.btn[data-id='borrar-grupo-${group.getId()}']`);
-                //console.log(`Se agrega eventlistener de botonBorrar en grupo ${group.getId()}`);
-                botonBorrar.addEventListener("click", (e) => {
-                    const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
-                    confirmaBorrar.dataset.grupo = group.getId();
-                    myModal.show();
+                const botonAtras = this.#myHTMLhelper.getItemHTML("boton-atras-grupo");
+                botonAtras.addEventListener("click", () => {
+                    this.#funcionDisplayMisGrupos();
                 });
 
+                const triggerTabList = document.querySelectorAll('.nav-tabs a');
+                triggerTabList.forEach(triggerEl => {
+                    const tabTrigger = new bootstrap.Tab(triggerEl)
+
+                    triggerEl.addEventListener('click', event => {
+                        event.preventDefault();
+                        tabTrigger.show();
+                    });
+                });
             });
 
-            const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
-            const funcionConfirmaBorrar = ev => {
-                const idGrupo = parseInt(ev.target.getAttribute("data-grupo"));
-                this.borrarGrupo(idGrupo);
-                myModal.hide();
-                this.#myHTMLhelper.removerGrupoHTML(ev.target.getAttribute("data-grupo"));
-                this.#myGroups.length == 0 && this.#myHTMLhelper.displayMensajeSecundario("Aun no hay grupos creados :(");
-            };
-    
-            //console.log(`Se agrega eventlistener de confirmaBorrar`);
-            confirmaBorrar.addEventListener("click", funcionConfirmaBorrar);
 
-        });  
+            const botonBorrar = this.#myHTMLhelper.queryHTML(`.btn[data-id='borrar-grupo-${group.getId()}']`);
+            //console.log(`Se agrega eventlistener de botonBorrar en grupo ${group.getId()}`);
+            botonBorrar.addEventListener("click", (e) => {
+                const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
+                confirmaBorrar.dataset.grupo = group.getId();
+                myModal.show();
+            });
+
+        });
+
+        const confirmaBorrar = this.#myHTMLhelper.getItemHTML("confirma-borrar-grupo");
+        const funcionConfirmaBorrar = ev => {
+            const idGrupo = parseInt(ev.target.getAttribute("data-grupo"));
+            this.borrarGrupo(idGrupo);
+            myModal.hide();
+            this.#myHTMLhelper.removerGrupoHTML(ev.target.getAttribute("data-grupo"));
+            this.#myGroups.length == 0 && this.#myHTMLhelper.displayMensajeSecundario("Aun no hay grupos creados :(");
+        };
+
+        //console.log(`Se agrega eventlistener de confirmaBorrar`);
+        confirmaBorrar.addEventListener("click", funcionConfirmaBorrar);
+
     }
 
     setCrearGastoPageEventListener(){
